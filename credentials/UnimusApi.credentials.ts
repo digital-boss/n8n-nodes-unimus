@@ -9,6 +9,12 @@ export class UnimusApi implements ICredentialType {
 	documentationUrl = 'unimus';
 	properties: INodeProperties[] = [
 		{
+			displayName: 'Base URL',
+			name: 'baseURL',
+			type: 'string',
+			default: '',
+		},
+		{
 			displayName: 'API Key',
 			name: 'unimusApiKey',
 			type: 'string',

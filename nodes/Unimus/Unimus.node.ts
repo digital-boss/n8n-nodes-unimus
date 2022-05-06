@@ -610,8 +610,6 @@ export class Unimus implements INodeType {
 
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
     const returnData: IDataObject[] = [];
-    const BaseURLV2 = "https://v2";
-    const BaseURLV3 = "https://v3";
     let uri = "";
     let responseData;
     let body: any = {};
@@ -626,16 +624,15 @@ export class Unimus implements INodeType {
 
     const apiVersion = this.getNodeParameter("apiVersion", 0) as string;
     if (apiVersion == "v3") {
-      uri = BaseURLV3;
       const resource = this.getNodeParameter("resource", 0) as string;
       if (resource == "devices") {
         const operation = this.getNodeParameter("operation", 0) as string;
         if (operation == "getDeviceByID") {
           const uuid = this.getNodeParameter("uuid", 0) as string;
-          uri = uri + "/devices/" + uuid;
+          uri = "/devices/" + uuid;
         }
         if (operation == "getDevices") {
-          uri = uri + "/devices";
+          uri = "/devices";
           let addresses = this.getNodeParameter("addresses", 0) as Object;
           let descriptions = this.getNodeParameter("descriptions", 0) as Object;
           let vendors = this.getNodeParameter("vendors", 0) as Object;
@@ -646,28 +643,42 @@ export class Unimus implements INodeType {
             "scheduleUUIDs",
             0
           ) as Object;
-
-          Object.values(addresses)[0].forEach((element: any) =>
-            addressList.push(element?.address)
-          );
-          Object.values(descriptions)[0].forEach((element: any) =>
-            descriptionList.push(element?.description)
-          );
-          Object.values(vendors)[0].forEach((element: any) =>
-            vendorList.push(element?.vendor)
-          );
-          Object.values(types)[0].forEach((element: any) =>
-            typeList.push(element?.type)
-          );
-          Object.values(models)[0].forEach((element: any) =>
-            modelList.push(element?.model)
-          );
-          Object.values(zoneUUIDs)[0].forEach((element: any) =>
-            zoneUUIDList.push(element?.zoneUUID)
-          );
-          Object.values(scheduleUUIDs)[0].forEach((element: any) =>
-            scheduleUUIDList.push(element?.scheduleUUID)
-          );
+          console.log(addresses)
+          if (addresses && Object.values(addresses)[0]) {
+            Object?.values(addresses)[0].forEach((element: any) =>
+              addressList.push(element?.address)
+            );
+          }
+          if (descriptions && Object.values(descriptions)[0]) {
+            Object?.values(descriptions)[0].forEach((element: any) =>
+              descriptionList.push(element?.description)
+            );
+          }
+          if (vendors && Object.values(vendors)[0]) {
+            Object?.values(vendors)[0].forEach((element: any) =>
+              vendorList.push(element?.vendor)
+            );
+          }
+          if (types && Object.values(types)[0]) {
+            Object?.values(types)[0].forEach((element: any) =>
+              typeList.push(element?.type)
+            );
+          }
+          if (models && Object.values(models)[0]) {
+            Object?.values(models)[0].forEach((element: any) =>
+              modelList.push(element?.model)
+            );
+          }
+          if (zoneUUIDs && Object.values(zoneUUIDs)[0]) {
+            Object?.values(zoneUUIDs)[0].forEach((element: any) =>
+              zoneUUIDList.push(element?.zoneUUID)
+            );
+          }
+          if (scheduleUUIDs && Object.values(scheduleUUIDs)[0]) {
+            Object?.values(scheduleUUIDs)[0].forEach((element: any) =>
+              scheduleUUIDList.push(element?.scheduleUUID)
+            );
+          }
           body.addresses = addressList;
           body.descriptions = descriptionList;
           body.vendors = vendorList;
@@ -686,7 +697,7 @@ export class Unimus implements INodeType {
       if (resource == "backups") {
         const operation = this.getNodeParameter("operation", 0) as string;
         if (operation == "getDeviceBackups") {
-          uri = uri + "/devices/backups";
+          uri = "/devices/backups";
           let deviceUUIDs = this.getNodeParameter("deviceUUIDs", 0) as Object;
           Object.values(deviceUUIDs)[0].forEach((element: any) =>
             deviceUUIDList.push(element?.deviceUUID)
@@ -697,10 +708,9 @@ export class Unimus implements INodeType {
           body.size = this.getNodeParameter("pageSize", 0) as number;
           body.page = this.getNodeParameter("pageIndex", 0) as number;
           body.deviceUuids = deviceUUIDList;
-          console.log(body);
         }
         if (operation == "getDiff") {
-          uri = uri + "/devices/backups:diff";
+          uri = "/devices/backups:diff";
 
           body.originalBackupUuid = this.getNodeParameter(
             "originalBackupUuid",
@@ -710,34 +720,26 @@ export class Unimus implements INodeType {
             "revisedBackupUuid",
             0
           ) as string;
-          console.log(body);
         }
       }
     }
 
     if (apiVersion == "v2") {
-      uri = BaseURLV2;
-      console.log("v2");
       const resource = this.getNodeParameter("resource", 0) as string;
       if (resource == "diff") {
         const operation = this.getNodeParameter("operation", 0) as string;
         if (operation == "getDevicesWithDifferentBackups") {
-          console.log("recource");
           const since = this.getNodeParameter("since", 0) as number;
           const until = this.getNodeParameter("until", 0) as number;
           const pageIndex = this.getNodeParameter("pageIndex", 0) as number;
           const pageSize = this.getNodeParameter("pageSize", 0) as number;
-          uri =
-            uri +
-            `devices/findByChangedBackup?page=:${pageIndex}&size=:${pageSize}&since=:${since}&until=:${until}`;
-          console.log(uri);
+          uri = `devices/findByChangedBackup?page=:${pageIndex}&size=:${pageSize}&since=:${since}&until=:${until}`;
         }
       }
       if (resource == "devices") {
         const address = this.getNodeParameter("address", 0) as string;
 
-        uri = uri + `/devices/findByAddress/:${address}?attr=:`;
-        console.log(uri);
+        uri = `/devices/findByAddress/:${address}?attr=:`;
       }
     }
 

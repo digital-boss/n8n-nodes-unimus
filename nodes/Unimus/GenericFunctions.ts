@@ -25,8 +25,12 @@ export async function unimusApiRequest(
     uri: uri,
   };
   const credentials = await this.getCredentials("unimusApi");
-  if (credentials != undefined && credentials.unimusApiKey) {
+  if (credentials != undefined && credentials.unimusApiKey && credentials.baseURL) {
     options.headers!["Authorization"] = "Bearer " + credentials.mollieApiKey;
+    let baseURL = credentials.baseURL;
+    uri = baseURL + uri
   }
+  console.log(uri);
+ 
   return await this.helpers.request!(options);
 }
