@@ -530,7 +530,7 @@ export class Unimus implements INodeType {
       },
 
       /* -------------------------------------------------------------------------- */
-      /*        operation:getDevicesBackups                            */
+      /*        operation:getDeviceBackups                            */
       /* -------------------------------------------------------------------------- */
       {
         displayName: "Device UUIDs",
@@ -575,6 +575,28 @@ export class Unimus implements INodeType {
         },
         required: false,
       },
+      {
+        displayName: 'Types',
+        name: 'types',
+        type: 'multiOptions',
+        displayOptions: {
+          show: {
+            operation: ["getDeviceBackups"],
+          },
+        },
+        options: [
+            {
+                name: 'BINARY',
+                value: 'BINARY',
+            },
+            {
+                name: 'TEXT',
+                value: 'TEXT',
+            },
+        ],
+        default: [], // Initially selected options
+        description: 'The events to be monitored',
+    },
 
       /* -------------------------------------------------------------------------- */
       /*        operation:getDiff                            */
@@ -699,9 +721,12 @@ export class Unimus implements INodeType {
         if (operation == "getDeviceBackups") {
           uri = "/devices/backups";
           let deviceUUIDs = this.getNodeParameter("deviceUUIDs", 0) as Object;
+          if (deviceUUIDs && Object.values(deviceUUIDs)[0] ) {
           Object.values(deviceUUIDs)[0].forEach((element: any) =>
             deviceUUIDList.push(element?.deviceUUID)
           );
+          }
+          body.types = this.getNodeParameter("types", 0) as Array<string>;
           body.latest = this.getNodeParameter("latest", 0) as boolean;
           body.validSince = this.getNodeParameter("since", 0) as number;
           body.validUntil = this.getNodeParameter("until", 0) as number;
