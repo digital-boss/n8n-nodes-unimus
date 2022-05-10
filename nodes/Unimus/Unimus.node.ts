@@ -719,7 +719,6 @@ export class Unimus implements INodeType {
               body.until = this.getNodeParameter("until", 0) as number;
               body.size = this.getNodeParameter("pageSize", 0) as number;
               body.page = this.getNodeParameter("pageIndex", 0) as number;
-              console.log(body);
             }
           }
 
@@ -760,7 +759,7 @@ export class Unimus implements INodeType {
         }
 
         if (apiVersion == "v2") {
-          uri = "/api/v3";
+          uri = "/api/v2";
           const resource = this.getNodeParameter("resource", 0) as string;
           if (resource == "diff") {
             const operation = this.getNodeParameter("operation", 0) as string;
@@ -771,7 +770,7 @@ export class Unimus implements INodeType {
               const pageSize = this.getNodeParameter("pageSize", 0) as number;
               uri =
                 uri +
-                `devices/findByChangedBackup?page=:${pageIndex}&size=:${pageSize}&since=:${since}&until=:${until}`;
+                `/devices/findByChangedBackup?page=${pageIndex}&size=${pageSize}&since=${since}&until=${until}`;
             }
           }
           if (resource == "devices") {
