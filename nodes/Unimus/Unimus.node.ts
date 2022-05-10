@@ -647,32 +647,31 @@ export class Unimus implements INodeType {
 
     for (let i = 0; i < items.length; i++) {
       try {
-        const apiVersion = this.getNodeParameter("apiVersion", 0) as string;
+        const apiVersion = this.getNodeParameter("apiVersion", i) as string;
         if (apiVersion == "v3") {
           uri = "/api/v3";
-          const resource = this.getNodeParameter("resource", 0) as string;
+          const resource = this.getNodeParameter("resource", i) as string;
           if (resource == "devices") {
-            const operation = this.getNodeParameter("operation", 0) as string;
+            const operation = this.getNodeParameter("operation", i) as string;
             if (operation == "getDeviceByID") {
-              const uuid = this.getNodeParameter("uuid", 0) as string;
+              const uuid = this.getNodeParameter("uuid", i) as string;
               uri = "/devices/" + uuid;
             }
             if (operation == "getDevices") {
               uri = uri = uri + "/devices";
-              let addresses = this.getNodeParameter("addresses", 0) as Object;
+              let addresses = this.getNodeParameter("addresses", i) as Object;
               let descriptions = this.getNodeParameter(
                 "descriptions",
-                0
+                i
               ) as Object;
-              let vendors = this.getNodeParameter("vendors", 0) as Object;
-              let types = this.getNodeParameter("types", 0) as Object;
-              let models = this.getNodeParameter("models", 0) as Object;
-              let zoneUUIDs = this.getNodeParameter("zoneUUIDs", 0) as Object;
+              let vendors = this.getNodeParameter("vendors", i) as Object;
+              let types = this.getNodeParameter("types", i) as Object;
+              let models = this.getNodeParameter("models", i) as Object;
+              let zoneUUIDs = this.getNodeParameter("zoneUUIDs", i) as Object;
               let scheduleUUIDs = this.getNodeParameter(
                 "scheduleUUIDs",
-                0
+                i
               ) as Object;
-              console.log(addresses);
               if (addresses && Object.values(addresses)[0]) {
                 Object?.values(addresses)[0].forEach((element: any) =>
                   addressList.push(element?.address)
@@ -715,32 +714,32 @@ export class Unimus implements INodeType {
               body.models = modelList;
               body.zoneUuids = zoneUUIDList;
               body.scheduleUuids = scheduleUUIDList;
-              body.since = this.getNodeParameter("since", 0) as number;
-              body.until = this.getNodeParameter("until", 0) as number;
-              body.size = this.getNodeParameter("pageSize", 0) as number;
-              body.page = this.getNodeParameter("pageIndex", 0) as number;
+              body.since = this.getNodeParameter("since", i) as number;
+              body.until = this.getNodeParameter("until", i) as number;
+              body.size = this.getNodeParameter("pageSize", i) as number;
+              body.page = this.getNodeParameter("pageIndex", i) as number;
             }
           }
 
           if (resource == "backups") {
-            const operation = this.getNodeParameter("operation", 0) as string;
+            const operation = this.getNodeParameter("operation", i) as string;
             if (operation == "getDeviceBackups") {
               uri = uri + "/devices/backups";
               let deviceUUIDs = this.getNodeParameter(
                 "deviceUUIDs",
-                0
+                i
               ) as Object;
               if (deviceUUIDs && Object.values(deviceUUIDs)[0]) {
                 Object.values(deviceUUIDs)[0].forEach((element: any) =>
                   deviceUUIDList.push(element?.deviceUUID)
                 );
               }
-              body.types = this.getNodeParameter("types", 0) as Array<string>;
-              body.latest = this.getNodeParameter("latest", 0) as boolean;
-              body.validSince = this.getNodeParameter("since", 0) as number;
-              body.validUntil = this.getNodeParameter("until", 0) as number;
-              body.size = this.getNodeParameter("pageSize", 0) as number;
-              body.page = this.getNodeParameter("pageIndex", 0) as number;
+              body.types = this.getNodeParameter("types", i) as Array<string>;
+              body.latest = this.getNodeParameter("latest", i) as boolean;
+              body.validSince = this.getNodeParameter("since", i) as number;
+              body.validUntil = this.getNodeParameter("until", i) as number;
+              body.size = this.getNodeParameter("pageSize", i) as number;
+              body.page = this.getNodeParameter("pageIndex", i) as number;
               body.deviceUuids = deviceUUIDList;
             }
             if (operation == "getDiff") {
@@ -748,11 +747,11 @@ export class Unimus implements INodeType {
 
               body.originalBackupUuid = this.getNodeParameter(
                 "originalBackupUuid",
-                0
+                i
               ) as string;
               body.revisedBackupUuid = this.getNodeParameter(
                 "revisedBackupUuid",
-                0
+                i
               ) as string;
             }
           }
@@ -760,21 +759,21 @@ export class Unimus implements INodeType {
 
         if (apiVersion == "v2") {
           uri = "/api/v2";
-          const resource = this.getNodeParameter("resource", 0) as string;
+          const resource = this.getNodeParameter("resource", i) as string;
           if (resource == "diff") {
-            const operation = this.getNodeParameter("operation", 0) as string;
+            const operation = this.getNodeParameter("operation", i) as string;
             if (operation == "getDevicesWithDifferentBackups") {
-              const since = this.getNodeParameter("since", 0) as number;
-              const until = this.getNodeParameter("until", 0) as number;
-              const pageIndex = this.getNodeParameter("pageIndex", 0) as number;
-              const pageSize = this.getNodeParameter("pageSize", 0) as number;
+              const since = this.getNodeParameter("since", i) as number;
+              const until = this.getNodeParameter("until", i) as number;
+              const pageIndex = this.getNodeParameter("pageIndex", i) as number;
+              const pageSize = this.getNodeParameter("pageSize", i) as number;
               uri =
                 uri +
                 `/devices/findByChangedBackup?page=${pageIndex}&size=${pageSize}&since=${since}&until=${until}`;
             }
           }
           if (resource == "devices") {
-            const address = this.getNodeParameter("address", 0) as string;
+            const address = this.getNodeParameter("address", i) as string;
 
             uri = uri + `/devices/findByAddress/:${address}?attr=:`;
           }
