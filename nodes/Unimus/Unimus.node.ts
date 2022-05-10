@@ -576,27 +576,27 @@ export class Unimus implements INodeType {
         required: false,
       },
       {
-        displayName: 'Types',
-        name: 'types',
-        type: 'multiOptions',
+        displayName: "Types",
+        name: "types",
+        type: "multiOptions",
         displayOptions: {
           show: {
             operation: ["getDeviceBackups"],
           },
         },
         options: [
-            {
-                name: 'BINARY',
-                value: 'BINARY',
-            },
-            {
-                name: 'TEXT',
-                value: 'TEXT',
-            },
+          {
+            name: "BINARY",
+            value: "BINARY",
+          },
+          {
+            name: "TEXT",
+            value: "TEXT",
+          },
         ],
         default: [], // Initially selected options
-        description: 'The events to be monitored',
-    },
+        description: "The events to be monitored",
+      },
 
       /* -------------------------------------------------------------------------- */
       /*        operation:getDiff                            */
@@ -631,6 +631,7 @@ export class Unimus implements INodeType {
   };
 
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const items = this.getInputData();
     const returnData: IDataObject[] = [];
     let uri = "";
     let responseData;
@@ -644,141 +645,153 @@ export class Unimus implements INodeType {
     let zoneUUIDList: string[] = [];
     let deviceUUIDList: string[] = [];
 
-    const apiVersion = this.getNodeParameter("apiVersion", 0) as string;
-    if (apiVersion == "v3") {
-      const resource = this.getNodeParameter("resource", 0) as string;
-      if (resource == "devices") {
-        const operation = this.getNodeParameter("operation", 0) as string;
-        if (operation == "getDeviceByID") {
-          const uuid = this.getNodeParameter("uuid", 0) as string;
-          uri = "/devices/" + uuid;
+    for (let i = 0; i < items.length; i++) {
+      try {
+        const apiVersion = this.getNodeParameter("apiVersion", 0) as string;
+        if (apiVersion == "v3") {
+          uri = "/api/v3";
+          const resource = this.getNodeParameter("resource", 0) as string;
+          if (resource == "devices") {
+            const operation = this.getNodeParameter("operation", 0) as string;
+            if (operation == "getDeviceByID") {
+              const uuid = this.getNodeParameter("uuid", 0) as string;
+              uri = "/devices/" + uuid;
+            }
+            if (operation == "getDevices") {
+              uri = uri = uri + "/devices";
+              let addresses = this.getNodeParameter("addresses", 0) as Object;
+              let descriptions = this.getNodeParameter(
+                "descriptions",
+                0
+              ) as Object;
+              let vendors = this.getNodeParameter("vendors", 0) as Object;
+              let types = this.getNodeParameter("types", 0) as Object;
+              let models = this.getNodeParameter("models", 0) as Object;
+              let zoneUUIDs = this.getNodeParameter("zoneUUIDs", 0) as Object;
+              let scheduleUUIDs = this.getNodeParameter(
+                "scheduleUUIDs",
+                0
+              ) as Object;
+              console.log(addresses);
+              if (addresses && Object.values(addresses)[0]) {
+                Object?.values(addresses)[0].forEach((element: any) =>
+                  addressList.push(element?.address)
+                );
+              }
+              if (descriptions && Object.values(descriptions)[0]) {
+                Object?.values(descriptions)[0].forEach((element: any) =>
+                  descriptionList.push(element?.description)
+                );
+              }
+              if (vendors && Object.values(vendors)[0]) {
+                Object?.values(vendors)[0].forEach((element: any) =>
+                  vendorList.push(element?.vendor)
+                );
+              }
+              if (types && Object.values(types)[0]) {
+                Object?.values(types)[0].forEach((element: any) =>
+                  typeList.push(element?.type)
+                );
+              }
+              if (models && Object.values(models)[0]) {
+                Object?.values(models)[0].forEach((element: any) =>
+                  modelList.push(element?.model)
+                );
+              }
+              if (zoneUUIDs && Object.values(zoneUUIDs)[0]) {
+                Object?.values(zoneUUIDs)[0].forEach((element: any) =>
+                  zoneUUIDList.push(element?.zoneUUID)
+                );
+              }
+              if (scheduleUUIDs && Object.values(scheduleUUIDs)[0]) {
+                Object?.values(scheduleUUIDs)[0].forEach((element: any) =>
+                  scheduleUUIDList.push(element?.scheduleUUID)
+                );
+              }
+              body.addresses = addressList;
+              body.descriptions = descriptionList;
+              body.vendors = vendorList;
+              body.types = typeList;
+              body.models = modelList;
+              body.zoneUuids = zoneUUIDList;
+              body.scheduleUuids = scheduleUUIDList;
+              body.since = this.getNodeParameter("since", 0) as number;
+              body.until = this.getNodeParameter("until", 0) as number;
+              body.size = this.getNodeParameter("pageSize", 0) as number;
+              body.page = this.getNodeParameter("pageIndex", 0) as number;
+              console.log(body);
+            }
+          }
+
+          if (resource == "backups") {
+            const operation = this.getNodeParameter("operation", 0) as string;
+            if (operation == "getDeviceBackups") {
+              uri = uri + "/devices/backups";
+              let deviceUUIDs = this.getNodeParameter(
+                "deviceUUIDs",
+                0
+              ) as Object;
+              if (deviceUUIDs && Object.values(deviceUUIDs)[0]) {
+                Object.values(deviceUUIDs)[0].forEach((element: any) =>
+                  deviceUUIDList.push(element?.deviceUUID)
+                );
+              }
+              body.types = this.getNodeParameter("types", 0) as Array<string>;
+              body.latest = this.getNodeParameter("latest", 0) as boolean;
+              body.validSince = this.getNodeParameter("since", 0) as number;
+              body.validUntil = this.getNodeParameter("until", 0) as number;
+              body.size = this.getNodeParameter("pageSize", 0) as number;
+              body.page = this.getNodeParameter("pageIndex", 0) as number;
+              body.deviceUuids = deviceUUIDList;
+            }
+            if (operation == "getDiff") {
+              uri = uri + "/devices/backups:diff";
+
+              body.originalBackupUuid = this.getNodeParameter(
+                "originalBackupUuid",
+                0
+              ) as string;
+              body.revisedBackupUuid = this.getNodeParameter(
+                "revisedBackupUuid",
+                0
+              ) as string;
+            }
+          }
         }
-        if (operation == "getDevices") {
-          uri = "/devices";
-          let addresses = this.getNodeParameter("addresses", 0) as Object;
-          let descriptions = this.getNodeParameter("descriptions", 0) as Object;
-          let vendors = this.getNodeParameter("vendors", 0) as Object;
-          let types = this.getNodeParameter("types", 0) as Object;
-          let models = this.getNodeParameter("models", 0) as Object;
-          let zoneUUIDs = this.getNodeParameter("zoneUUIDs", 0) as Object;
-          let scheduleUUIDs = this.getNodeParameter(
-            "scheduleUUIDs",
-            0
-          ) as Object;
-          console.log(addresses)
-          if (addresses && Object.values(addresses)[0]) {
-            Object?.values(addresses)[0].forEach((element: any) =>
-              addressList.push(element?.address)
-            );
+
+        if (apiVersion == "v2") {
+          uri = "/api/v3";
+          const resource = this.getNodeParameter("resource", 0) as string;
+          if (resource == "diff") {
+            const operation = this.getNodeParameter("operation", 0) as string;
+            if (operation == "getDevicesWithDifferentBackups") {
+              const since = this.getNodeParameter("since", 0) as number;
+              const until = this.getNodeParameter("until", 0) as number;
+              const pageIndex = this.getNodeParameter("pageIndex", 0) as number;
+              const pageSize = this.getNodeParameter("pageSize", 0) as number;
+              uri =
+                uri +
+                `devices/findByChangedBackup?page=:${pageIndex}&size=:${pageSize}&since=:${since}&until=:${until}`;
+            }
           }
-          if (descriptions && Object.values(descriptions)[0]) {
-            Object?.values(descriptions)[0].forEach((element: any) =>
-              descriptionList.push(element?.description)
-            );
+          if (resource == "devices") {
+            const address = this.getNodeParameter("address", 0) as string;
+
+            uri = uri + `/devices/findByAddress/:${address}?attr=:`;
           }
-          if (vendors && Object.values(vendors)[0]) {
-            Object?.values(vendors)[0].forEach((element: any) =>
-              vendorList.push(element?.vendor)
-            );
-          }
-          if (types && Object.values(types)[0]) {
-            Object?.values(types)[0].forEach((element: any) =>
-              typeList.push(element?.type)
-            );
-          }
-          if (models && Object.values(models)[0]) {
-            Object?.values(models)[0].forEach((element: any) =>
-              modelList.push(element?.model)
-            );
-          }
-          if (zoneUUIDs && Object.values(zoneUUIDs)[0]) {
-            Object?.values(zoneUUIDs)[0].forEach((element: any) =>
-              zoneUUIDList.push(element?.zoneUUID)
-            );
-          }
-          if (scheduleUUIDs && Object.values(scheduleUUIDs)[0]) {
-            Object?.values(scheduleUUIDs)[0].forEach((element: any) =>
-              scheduleUUIDList.push(element?.scheduleUUID)
-            );
-          }
-          body.addresses = addressList;
-          body.descriptions = descriptionList;
-          body.vendors = vendorList;
-          body.types = typeList;
-          body.models = modelList;
-          body.zoneUuids = zoneUUIDList;
-          body.scheduleUuids = scheduleUUIDList;
-          body.since = this.getNodeParameter("since", 0) as number;
-          body.until = this.getNodeParameter("until", 0) as number;
-          body.size = this.getNodeParameter("pageSize", 0) as number;
-          body.page = this.getNodeParameter("pageIndex", 0) as number;
-          console.log(body);
         }
+
+        responseData = await unimusApiRequest.call(this, body, uri);
+        responseData = JSON.parse(responseData);
+
+        if (Array.isArray(responseData)) {
+          returnData.push.apply(returnData, responseData as IDataObject[]);
+        } else {
+          returnData.push(responseData as IDataObject);
+        }
+      } catch (error) {
+        returnData.push(error as IDataObject);
       }
-
-      if (resource == "backups") {
-        const operation = this.getNodeParameter("operation", 0) as string;
-        if (operation == "getDeviceBackups") {
-          uri = "/devices/backups";
-          let deviceUUIDs = this.getNodeParameter("deviceUUIDs", 0) as Object;
-          if (deviceUUIDs && Object.values(deviceUUIDs)[0] ) {
-          Object.values(deviceUUIDs)[0].forEach((element: any) =>
-            deviceUUIDList.push(element?.deviceUUID)
-          );
-          }
-          body.types = this.getNodeParameter("types", 0) as Array<string>;
-          body.latest = this.getNodeParameter("latest", 0) as boolean;
-          body.validSince = this.getNodeParameter("since", 0) as number;
-          body.validUntil = this.getNodeParameter("until", 0) as number;
-          body.size = this.getNodeParameter("pageSize", 0) as number;
-          body.page = this.getNodeParameter("pageIndex", 0) as number;
-          body.deviceUuids = deviceUUIDList;
-        }
-        if (operation == "getDiff") {
-          uri = "/devices/backups:diff";
-
-          body.originalBackupUuid = this.getNodeParameter(
-            "originalBackupUuid",
-            0
-          ) as string;
-          body.revisedBackupUuid = this.getNodeParameter(
-            "revisedBackupUuid",
-            0
-          ) as string;
-        }
-      }
-    }
-
-    if (apiVersion == "v2") {
-      const resource = this.getNodeParameter("resource", 0) as string;
-      if (resource == "diff") {
-        const operation = this.getNodeParameter("operation", 0) as string;
-        if (operation == "getDevicesWithDifferentBackups") {
-          const since = this.getNodeParameter("since", 0) as number;
-          const until = this.getNodeParameter("until", 0) as number;
-          const pageIndex = this.getNodeParameter("pageIndex", 0) as number;
-          const pageSize = this.getNodeParameter("pageSize", 0) as number;
-          uri = `devices/findByChangedBackup?page=:${pageIndex}&size=:${pageSize}&since=:${since}&until=:${until}`;
-        }
-      }
-      if (resource == "devices") {
-        const address = this.getNodeParameter("address", 0) as string;
-
-        uri = `/devices/findByAddress/:${address}?attr=:`;
-      }
-    }
-
-    try {
-      responseData = await unimusApiRequest.call(this, body, uri);
-      responseData = JSON.parse(responseData);
-    } catch (error) {
-      returnData.push(error as IDataObject);
-    }
-
-    if (Array.isArray(responseData)) {
-      returnData.push.apply(returnData, responseData as IDataObject[]);
-    } else {
-      returnData.push(responseData as IDataObject);
     }
 
     return [this.helpers.returnJsonArray(returnData)];
