@@ -68,20 +68,18 @@ export class Unimus implements INodeType {
 										uri = '/devices/' + uuid;
 									}break;
 									case 'getDevices':{
-										uri = uri = uri + '/devices';
+
 										const addresses = this.getNodeParameter('addresses', i) as IDataObject;
-										const descriptions = this.getNodeParameter(
-											'descriptions',
-											i,
-										) as IDataObject;
+										const descriptions = this.getNodeParameter('descriptions',i,) as IDataObject;
 										const vendors = this.getNodeParameter('vendors', i) as IDataObject;
 										const types = this.getNodeParameter('types', i) as IDataObject;
 										const models = this.getNodeParameter('models', i) as IDataObject;
 										const zoneUUIDs = this.getNodeParameter('zoneUUIDs', i) as IDataObject;
-										const scheduleUUIDs = this.getNodeParameter(
-											'scheduleUUIDs',
-											i,
-										) as IDataObject;
+										const scheduleUUIDs = this.getNodeParameter('scheduleUUIDs',i,) as IDataObject;
+										const devicesValidSince = this.getNodeParameter('since',i,) as string;
+										const devicesValidUntil = this.getNodeParameter('until',i,) as string;
+										const devicesPage = this.getNodeParameter('pageIndex',i,) as string;
+										const devicesSize = this.getNodeParameter('pageSize',i,) as string;
 										{
 											if (addresses && Object.values(addresses)[0]) {
 												// @ts-ignore
@@ -127,18 +125,45 @@ export class Unimus implements INodeType {
 											}
 										}
 										{
-											body.addresses = addressList;
-											body.descriptions = descriptionList;
-											body.vendors = vendorList;
-											body.types = typeList;
-											body.models = modelList;
-											body.zoneUuids = zoneUUIDList;
-											body.scheduleUuids = scheduleUUIDList;
-											body.since = this.getNodeParameter('since', i) as number;
-											body.until = this.getNodeParameter('until', i) as number;
-											body.size = this.getNodeParameter('pageSize', i) as number;
-											body.page = this.getNodeParameter('pageIndex', i) as number;
+											var devicesAddressesString = addressList.reduce((acc:any,addresses:string,i:number):string=>{
+												return acc + 'addresses=' + addresses + '&'
+											},'');
+											var devicesDescriptionsString = descriptionList.reduce((acc:any,descriptions:string,i:number):string=>{
+												return acc + 'descriptions=' + descriptions + '&'
+											},'');
+											var devicesVendorsString = vendorList.reduce((acc:any,vendors:string,i:number):string=>{
+												return acc + 'vendors=' + vendors + '&'
+											},'');
+											var devicesTypesString = typeList.reduce((acc:any,types:string,i:number):string=>{
+												return acc + 'types=' + types + '&'
+											},'');
+											var devicesModelsString = modelList.reduce((acc:any,models:string,i:number):string=>{
+												return acc + 'models=' + models + '&'
+											},'');
+											var devicesZoneUuidsString = zoneUUIDList.reduce((acc:any,zoneUuids:string,i:number):string=>{
+												return acc + 'zoneUuids=' + zoneUuids + '&'
+											},'');
+											var devicesScheduleUuidsString = scheduleUUIDList.reduce((acc:any,scheduleUuids:string,i:number):string=>{
+												return acc + 'scheduleUuids=' + scheduleUuids + '&'
+											},'');
+
 										}
+										uri = uri = uri + `/devices?${devicesAddressesString}${devicesDescriptionsString}${devicesVendorsString}${devicesTypesString}${devicesModelsString}${devicesZoneUuidsString}${devicesScheduleUuidsString}since=${devicesValidSince}&until=${devicesValidUntil}&page=${devicesPage}&size=${devicesSize}`;
+										
+										// uri = uri = uri + '/devices?addresses=string1&addresses=string2&descriptions=string3&descriptions=string4&vendors=string5&vendors=string6&types=string7&models=string8&zoneUuids=string9&scheduleUuids=string10&since=2012&until=2025&page=123&size=512';
+										// {
+										// 	body.addresses = addressList;
+										// 	body.descriptions = descriptionList;
+										// 	body.vendors = vendorList;
+										// 	body.types = typeList;
+										// 	body.models = modelList;
+										// 	body.zoneUuids = zoneUUIDList;
+										// 	body.scheduleUuids = scheduleUUIDList;
+										// 	body.since = this.getNodeParameter('since', i) as number;
+										// 	body.until = this.getNodeParameter('until', i) as number;
+										// 	body.size = this.getNodeParameter('pageSize', i) as number;
+										// 	body.page = this.getNodeParameter('pageIndex', i) as number;
+										// }
 									}break;
 								}
 							}break;
@@ -146,11 +171,8 @@ export class Unimus implements INodeType {
 								const operation = this.getNodeParameter('operation', i) as string;
 								switch(operation){
 									case 'getDeviceBackups':{
-										uri = uri + '/devices/backups';
-										const deviceUUIDs = this.getNodeParameter(
-											'deviceUUIDs',
-											i,
-										) as IDataObject;
+										
+										const deviceUUIDs = this.getNodeParameter('deviceUUIDs',i,) as IDataObject;
 										{
 											if (deviceUUIDs && Object.values(deviceUUIDs)[0]) {
 												// @ts-ignore
@@ -160,14 +182,23 @@ export class Unimus implements INodeType {
 											}
 										}
 										{
-											body.types = this.getNodeParameter('types', i) as string[];
-											body.latest = this.getNodeParameter('latest', i) as boolean;
+											body.deviceUuids = deviceUUIDList;
 											body.validSince = this.getNodeParameter('since', i) as number;
 											body.validUntil = this.getNodeParameter('until', i) as number;
-											body.size = this.getNodeParameter('pageSize', i) as number;
+											body.types = this.getNodeParameter('types', i) as string[];
+											body.latest = this.getNodeParameter('latest', i) as boolean;
 											body.page = this.getNodeParameter('pageIndex', i) as number;
-											body.deviceUuids = deviceUUIDList;
+											body.size = this.getNodeParameter('pageSize', i) as number;
 										}
+										{
+											var deviceUuidString = deviceUUIDList.reduce((acc:any,deviceUuids:string,i:number):string=>{
+												return acc + 'deviceUuids=' + deviceUuids + '&'
+											},'')
+										}
+										uri = uri + `/devices/backups?${deviceUuidString}&validSince=${body.validSince}&validUntil=${body.validUntil}&types=${body.types}latest=${String(body.latest)}&page=${body.page}size=${body.size}`;
+										
+										// uri = uri + `/devices/backups?deviceUuids=string1&deviceUuids=string2&validSince=2012&validUntil=2025&types=BINARY&latest=true&page=123&size=512`;
+										
 									}break;
 									case 'getDiff':{
 										uri = uri + '/devices/backups:diff';
@@ -213,7 +244,7 @@ export class Unimus implements INodeType {
 				}
 
 
-				responseData = await unimusApiRequest.call(this, body, uri);
+				responseData = await unimusApiRequest.call(this, uri);
 				responseData = JSON.parse(responseData);
 
 				if (Array.isArray(responseData)) {

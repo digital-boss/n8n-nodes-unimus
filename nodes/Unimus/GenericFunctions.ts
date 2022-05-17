@@ -15,13 +15,13 @@ export async function unimusApiRequest(
 		| IExecuteFunctions
 		| IExecuteSingleFunctions
 		| ILoadOptionsFunctions,
-		body: IDataObject = {},
+		// body: IDataObject = {},
 		uri: string,
 	// tslint:disable-next-line:no-any
 ): Promise<any> {
 	const options: OptionsWithUri = {
 		headers: {},
-		body,
+		// body,
 		method : 'GET',
 		uri,
 	};
