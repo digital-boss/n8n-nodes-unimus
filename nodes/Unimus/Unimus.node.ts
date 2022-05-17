@@ -6,6 +6,8 @@ import {
   IDataObject,
 } from "n8n-workflow";
 import { unimusApiRequest } from "./GenericFunctions";
+import { version } from '../version';
+
 
 export class Unimus implements INodeType {
   description: INodeTypeDescription = {
@@ -14,7 +16,7 @@ export class Unimus implements INodeType {
     icon: "file:unimus.png",
     group: ["transform"],
     version: 1,
-    description: "Unimus REST API",
+		description: `Consume Unimus API (v.${version})`,
     defaults: {
       name: "Unimus",
       color: "#772244",
