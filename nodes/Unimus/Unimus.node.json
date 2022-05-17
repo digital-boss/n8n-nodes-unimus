@@ -1,5 +1,5 @@
 {
-	"node": "@digital-boss/n8n-nodes-mollie",
+	"node": "@digital-boss/n8n-nodes-unimus",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
 	"categories": [
