@@ -4,11 +4,24 @@ import {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
+	NodeOperationError,
 } from 'n8n-workflow';
 
 import { unimusApiRequest } from './GenericFunctions';
 
 import { version } from '../version';
+
+import {
+	resources,
+	v2devicesFields,
+	v2devicesOperations,
+	v2diffFields,
+	v2diffOperations,
+	v3backupsFields,
+	v3backupsOperations,
+	v3devicesFields,
+	v3devicesOperations
+} from './descriptions';
 
 export class Unimus implements INodeType {
 	description: INodeTypeDescription = {
@@ -35,7 +48,6 @@ export class Unimus implements INodeType {
 			// ----------------------------------
 			//         Versions
 			// ----------------------------------
-
 			{
 				displayName: 'API Version',
 				name: 'apiVersion',
@@ -53,583 +65,15 @@ export class Unimus implements INodeType {
 				default: 'v3',
 				required: true,
 			},
-			// ----------------------------------
-			//        V3 Resource
-			// ----------------------------------
-
-			{
-				displayName: 'Resource',
-				name: 'resource',
-				type: 'options',
-				displayOptions: {
-					show: {
-						apiVersion: ['v3'],
-					},
-				},
-				options: [
-					{
-						name: 'Devices',
-						value: 'devices',
-					},
-					{
-						name: 'Backups',
-						value: 'backups',
-					},
-				],
-				default: 'devices',
-				required: true,
-			},
-
-			// ----------------------------------
-			//        V2 Resource
-			// ----------------------------------
-
-			{
-				displayName: 'Resource',
-				name: 'resource',
-				type: 'options',
-				displayOptions: {
-					show: {
-						apiVersion: ['v2'],
-					},
-				},
-				options: [
-					{
-						name: 'Diff',
-						value: 'diff',
-					},
-					{
-						name: 'Devices',
-						value: 'devices',
-					},
-				],
-				default: 'diff',
-				required: true,
-			},
-			// ----------------------------------
-			//        V2-devices operations
-			// ----------------------------------
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				displayOptions: {
-					show: {
-						apiVersion: ['v2'],
-						resource: ['devices'],
-					},
-				},
-				options: [
-					{
-						name: 'Get device by address',
-						value: 'getDeviceByAddress',
-						description: 'Get an individual device by address',
-					},
-				],
-				default: 'getDeviceByAddress',
-				description: 'The operation to perform.',
-			},
-			// ----------------------------------
-			//        V2-diff operations
-			// ----------------------------------
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				displayOptions: {
-					show: {
-						apiVersion: ['v2'],
-						resource: ['diff'],
-					},
-				},
-				options: [
-					{
-						name: 'Get devices with different backups',
-						value: 'getDevicesWithDifferentBackups',
-						description:
-							'Get a list of devices that has different backups in specified time range.',
-					},
-				],
-				default: 'getDevicesWithDifferentBackups',
-				description: 'The operation to perform.',
-			},
-			// ----------------------------------
-			//        V3-devices operations
-			// ----------------------------------
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				displayOptions: {
-					show: {
-						resource: ['devices'],
-						apiVersion: ['v3'],
-					},
-				},
-				options: [
-					{
-						name: 'Get devices',
-						value: 'getDevices',
-						description: 'Get a list of devices.',
-					},
-					{
-						name: 'Get device by ID',
-						value: 'getDeviceByID',
-						description: 'Get an individual device by ID.',
-					},
-				],
-				default: 'getDevices',
-				description: 'The operation to perform.',
-			},
-			// ----------------------------------
-			//        V3-backups operations
-			// ----------------------------------
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				displayOptions: {
-					show: {
-						resource: ['backups'],
-						apiVersion: ['v3'],
-					},
-				},
-				options: [
-					{
-						name: 'Get device backups',
-						value: 'getDeviceBackups',
-						description: 'Get a list of all device backups.',
-					},
-					{
-						name: 'Get diff',
-						value: 'getDiff',
-						description: 'Compute and return a diff beetween two backups',
-					},
-				],
-				default: 'getDeviceBackups',
-				description: 'The operation to perform.',
-			},
-
-			/* -------------------------------------------------------------------------- */
-			/*        operation:getDevicesWithDifferentBackups, getDevices                                 */
-			/* -------------------------------------------------------------------------- */
-			{
-				displayName: 'Page Index',
-				name: 'pageIndex',
-				type: 'number',
-				description: 'Page index (OPTIONAL)',
-				default: null,
-				displayOptions: {
-					show: {
-						operation: [
-							'getDevicesWithDifferentBackups',
-							'getDevices',
-							'getDeviceBackups',
-						],
-					},
-				},
-				required: false,
-			},
-			{
-				displayName: 'Page Size',
-				name: 'pageSize',
-				type: 'number',
-				description: 'Page size (OPTIONAL)',
-				default: 2147483647,
-				displayOptions: {
-					show: {
-						operation: [
-							'getDevicesWithDifferentBackups',
-							'getDevices',
-							'getDeviceBackups',
-						],
-					},
-				},
-				required: false,
-			},
-			{
-				displayName: 'Since',
-				name: 'since',
-				type: 'number',
-				description: 'Start of time range in seconds (OPTIONAL) (DEFAULT = 0)',
-				default: 0,
-				displayOptions: {
-					show: {
-						operation: [
-							'getDevicesWithDifferentBackups',
-							'getDevices',
-							'getDeviceBackups',
-						],
-					},
-				},
-				required: false,
-			},
-			{
-				displayName: 'Until',
-				name: 'until',
-				type: 'number',
-				description:
-					'End of time range in seconds (OPTIONAL) (DEFAULT = time of the request)',
-				default: null,
-				displayOptions: {
-					show: {
-						operation: [
-							'getDevicesWithDifferentBackups',
-							'getDevices',
-							'getDeviceBackups',
-						],
-					},
-				},
-				required: false,
-			},
-
-			{
-				displayName: 'Addresses',
-				name: 'addresses',
-				placeholder: 'Add address',
-				type: 'fixedCollection',
-				default: '',
-				typeOptions: {
-					multipleValues: true,
-				},
-				displayOptions: {
-					show: {
-						operation: ['getDevices'],
-					},
-				},
-				description: '',
-				options: [
-					{
-						name: 'addressesValues',
-						displayName: 'Address',
-						values: [
-							{
-								displayName: 'Address',
-								name: 'address',
-								type: 'string',
-								default: '',
-							},
-						],
-					},
-				],
-			},
-
-			{
-				displayName: 'Descriptions',
-				name: 'descriptions',
-				placeholder: 'Add description',
-				type: 'fixedCollection',
-				default: '',
-				typeOptions: {
-					multipleValues: true,
-				},
-				displayOptions: {
-					show: {
-						operation: ['getDevices'],
-					},
-				},
-				description: '',
-				options: [
-					{
-						name: 'descriptionValues',
-						displayName: 'Description',
-						values: [
-							{
-								displayName: 'Description',
-								name: 'description',
-								type: 'string',
-								default: '',
-							},
-						],
-					},
-				],
-			},
-
-			{
-				displayName: 'Vendors',
-				name: 'vendors',
-				placeholder: 'Add vendors',
-				type: 'fixedCollection',
-				default: '',
-				typeOptions: {
-					multipleValues: true,
-				},
-				displayOptions: {
-					show: {
-						operation: ['getDevices'],
-					},
-				},
-				description: '',
-				options: [
-					{
-						name: 'vendorsValues',
-						displayName: 'Vendor',
-						values: [
-							{
-								displayName: 'Vendor',
-								name: 'vendor',
-								type: 'string',
-								default: '',
-							},
-						],
-					},
-				],
-			},
-
-			{
-				displayName: 'Types',
-				name: 'types',
-				placeholder: 'Add type',
-				type: 'fixedCollection',
-				default: '',
-				typeOptions: {
-					multipleValues: true,
-				},
-				displayOptions: {
-					show: {
-						operation: ['getDevices'],
-					},
-				},
-				description: '',
-				options: [
-					{
-						name: 'typesValues',
-						displayName: 'Type',
-						values: [
-							{
-								displayName: 'Type',
-								name: 'type',
-								type: 'string',
-								default: '',
-							},
-						],
-					},
-				],
-			},
-
-			{
-				displayName: 'Models',
-				name: 'models',
-				placeholder: 'Add model',
-				type: 'fixedCollection',
-				default: '',
-				typeOptions: {
-					multipleValues: true,
-				},
-				displayOptions: {
-					show: {
-						operation: ['getDevices'],
-					},
-				},
-				description: '',
-				options: [
-					{
-						name: 'modelsValues',
-						displayName: 'Type',
-						values: [
-							{
-								displayName: 'Model',
-								name: 'model',
-								type: 'string',
-								default: '',
-							},
-						],
-					},
-				],
-			},
-
-			{
-				displayName: 'Zone UUIDs',
-				name: 'zoneUUIDs',
-				placeholder: 'Add Zone UUID',
-				type: 'fixedCollection',
-				default: '',
-				typeOptions: {
-					multipleValues: true,
-				},
-				displayOptions: {
-					show: {
-						operation: ['getDevices'],
-					},
-				},
-				description: '',
-				options: [
-					{
-						name: 'zoneUUIDsValues',
-						displayName: 'Zone UUID',
-						values: [
-							{
-								displayName: 'Zone UUID',
-								name: 'zoneUUID',
-								type: 'string',
-								default: '',
-							},
-						],
-					},
-				],
-			},
-
-			{
-				displayName: 'Schedule UUIDs',
-				name: 'scheduleUUIDs',
-				placeholder: 'Add Schedule UUID',
-				type: 'fixedCollection',
-				default: '',
-				typeOptions: {
-					multipleValues: true,
-				},
-				displayOptions: {
-					show: {
-						operation: ['getDevices'],
-					},
-				},
-				description: '',
-				options: [
-					{
-						name: 'scheduleUuidsValues',
-						displayName: 'Schedule UUID',
-						values: [
-							{
-								displayName: 'Schedule UUID',
-								name: 'scheduleUUID',
-								type: 'string',
-								default: '',
-							},
-						],
-					},
-				],
-			},
-
-			/* -------------------------------------------------------------------------- */
-			/*        operation: getDeviceByID                                */
-			/* -------------------------------------------------------------------------- */
-			{
-				displayName: 'UUID',
-				name: 'uuid',
-				type: 'string',
-				default: '',
-				displayOptions: {
-					show: {
-						operation: ['getDeviceByID'],
-					},
-				},
-				required: true,
-			},
-
-			/* -------------------------------------------------------------------------- */
-			/*        operation: getDeviceByAddress                               */
-			/* -------------------------------------------------------------------------- */
-			{
-				displayName: 'Address',
-				name: 'address',
-				type: 'string',
-				default: '',
-				displayOptions: {
-					show: {
-						operation: ['getDeviceByAddress'],
-					},
-				},
-				required: true,
-			},
-
-			/* -------------------------------------------------------------------------- */
-			/*        operation:getDeviceBackups                            */
-			/* -------------------------------------------------------------------------- */
-			{
-				displayName: 'Device UUIDs',
-				name: 'deviceUUIDs',
-				placeholder: 'Add Device UUID',
-				type: 'fixedCollection',
-				default: '',
-				typeOptions: {
-					multipleValues: true,
-				},
-				displayOptions: {
-					show: {
-						operation: ['getDeviceBackups'],
-					},
-				},
-				description: '',
-				options: [
-					{
-						name: 'deviceUuidsValues',
-						displayName: 'Device UUID',
-						values: [
-							{
-								displayName: 'Device UUID',
-								name: 'deviceUUID',
-								type: 'string',
-								default: '',
-							},
-						],
-					},
-				],
-			},
-			{
-				displayName: 'Latest',
-				name: 'latest',
-				type: 'boolean',
-				description: 'Filter backups by valid until timestamp',
-				default: true,
-				displayOptions: {
-					show: {
-						operation: ['getDeviceBackups'],
-					},
-				},
-				required: false,
-			},
-			{
-				displayName: 'Types',
-				name: 'types',
-				type: 'multiOptions',
-				displayOptions: {
-					show: {
-						operation: ['getDeviceBackups'],
-					},
-				},
-				options: [
-					{
-						name: 'BINARY',
-						value: 'BINARY',
-					},
-					{
-						name: 'TEXT',
-						value: 'TEXT',
-					},
-				],
-				default: [], // Initially selected options
-				description: 'The events to be monitored',
-			},
-
-			/* -------------------------------------------------------------------------- */
-			/*        operation:getDiff                            */
-			/* -------------------------------------------------------------------------- */
-
-			{
-				displayName: 'Original Backup UUID',
-				name: 'originalBackupUuid',
-				type: 'string',
-				default: '',
-				displayOptions: {
-					show: {
-						operation: ['getDiff'],
-					},
-				},
-				required: true,
-			},
-
-			{
-				displayName: 'Reversed Backup UUID',
-				name: 'revisedBackupUuid',
-				type: 'string',
-				default: '',
-				displayOptions: {
-					show: {
-						operation: ['getDiff'],
-					},
-				},
-				required: true,
-			},
+			...resources,
+			...v2devicesOperations,
+			...v2devicesFields,
+			...v2diffOperations,
+			...v2diffFields,
+			...v3backupsOperations,
+			...v3backupsFields,
+			...v3devicesOperations,
+			...v3devicesFields,
 		],
 	};
 
@@ -637,161 +81,175 @@ export class Unimus implements INodeType {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
 		let endpoint = '';
+		let method;
 		let responseData;
 		const body: IDataObject = {};
 		const qs: IDataObject = {};
-		const addressList: string[] = [];
-		const descriptionList: string[] = [];
-		const vendorList: string[] = [];
-		const typeList: string[] = [];
-		const modelList: string[] = [];
-		const scheduleUUIDList: string[] = [];
-		const zoneUUIDList: string[] = [];
-		const deviceUUIDList: string[] = [];
+
+		const apiVersion = this.getNodeParameter('apiVersion', 0) as string;
+		const resource = this.getNodeParameter('resource', 0) as string;
+		const operation = this.getNodeParameter('operation', 0) as string;
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				const apiVersion = this.getNodeParameter('apiVersion', i) as string;
-				if (apiVersion === 'v3') {
-					endpoint = '/api/v3';
-					const resource = this.getNodeParameter('resource', i) as string;
-					if (resource === 'devices') {
-						const operation = this.getNodeParameter('operation', i) as string;
-						if (operation === 'getDeviceByID') {
-							const uuid = this.getNodeParameter('uuid', i) as string;
-							endpoint = '/devices/' + uuid;
+
+				switch (apiVersion) {
+					case 'v2': {
+						endpoint = '/api/v2';
+						switch (resource) {
+							case 'diff': {
+								switch (operation) {
+									case 'getDevicesWithDifferentBackups': {
+										// ----------------------------------
+										//        v3:devices:getDevicesWithDifferentBackups
+										// ----------------------------------
+										method = 'GET';
+										endpoint = endpoint + `/devices/findByChangedBackup`;
+										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
+										Object.assign(qs, additionalParameters);
+										break;
+
+									}
+									default: {
+										throw new NodeOperationError(this.getNode(), `The operation "${operation}" is not supported for resource "${resource}" and version "${apiVersion}"!`);
+									}
+								}
+								break;
+
+							}
+							case 'devices': {
+								switch (operation) {
+									case 'getDeviceByAddress': {
+										// ----------------------------------
+										//        v3:devices:getDeviceByAddress
+										// ----------------------------------
+										method = 'GET';
+										const address = this.getNodeParameter('address', i) as string;
+										endpoint = endpoint + `/devices/findByAddress/:${address}`;
+										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
+										Object.assign(qs, additionalParameters);
+										break;
+
+									}
+									default: {
+										throw new NodeOperationError(this.getNode(), `The operation "${operation}" is not supported for resource "${resource}" and version "${apiVersion}"!`);
+									}
+								}
+								break;
+
+							}
+							default: {
+								throw new NodeOperationError(this.getNode(), `The resource "${resource}" is not supported!`);
+							}
 						}
-						if (operation === 'getDevices') {
-							endpoint = endpoint = endpoint + '/devices';
-							const addresses = this.getNodeParameter('addresses', i) as IDataObject;
-							const descriptions = this.getNodeParameter(
-								'descriptions',
-								i,
-							) as IDataObject;
-							const vendors = this.getNodeParameter('vendors', i) as IDataObject;
-							const types = this.getNodeParameter('types', i) as IDataObject;
-							const models = this.getNodeParameter('models', i) as IDataObject;
-							const zoneUUIDs = this.getNodeParameter('zoneUUIDs', i) as IDataObject;
-							const scheduleUUIDs = this.getNodeParameter(
-								'scheduleUUIDs',
-								i,
-							) as IDataObject;
-							if (addresses && Object.values(addresses)[0]) {
-								// @ts-ignore
-								Object?.values(addresses)[0].forEach((element: IDataObject) => // TODO: fix possibly undefined tslint issue
-									addressList.push(element.address as string),
-								);
-							}
-							if (descriptions && Object.values(descriptions)[0]) {
-								// @ts-ignore
-								Object?.values(descriptions)[0].forEach((element: IDataObject) => // TODO: fix possibly undefined tslint issue
-									descriptionList.push(element.description as string),
-								);
-							}
-							if (vendors && Object.values(vendors)[0]) {
-								// @ts-ignore
-								Object?.values(vendors)[0].forEach((element: IDataObject) => // TODO: fix possibly undefined tslint issue
-									vendorList.push(element.vendor as string),
-								);
-							}
-							if (types && Object.values(types)[0]) {
-								// @ts-ignore
-								Object?.values(types)[0].forEach((element: IDataObject) => // TODO: fix possibly undefined tslint issue
-									typeList.push(element.type as string),
-								);
-							}
-							if (models && Object.values(models)[0]) {
-								// @ts-ignore
-								Object?.values(models)[0].forEach((element: IDataObject) => // TODO: fix possibly undefined tslint issue
-									modelList.push(element.model as string),
-								);
-							}
-							if (zoneUUIDs && Object.values(zoneUUIDs)[0]) {
-								// @ts-ignore
-								Object?.values(zoneUUIDs)[0].forEach((element: IDataObject) => // TODO: fix possibly undefined tslint issue
-									zoneUUIDList.push(element.zoneUUID as string),
-								);
-							}
-							if (scheduleUUIDs && Object.values(scheduleUUIDs)[0]) {
-								// @ts-ignore
-								Object?.values(scheduleUUIDs)[0].forEach((element: IDataObject) => // TODO: fix possibly undefined tslint issue
-									scheduleUUIDList.push(element.scheduleUUID as string),
-								);
-							}
-							body.addresses = addressList;
-							body.descriptions = descriptionList;
-							body.vendors = vendorList;
-							body.types = typeList;
-							body.models = modelList;
-							body.zoneUuids = zoneUUIDList;
-							body.scheduleUuids = scheduleUUIDList;
-							body.since = this.getNodeParameter('since', i) as number;
-							body.until = this.getNodeParameter('until', i) as number;
-							body.size = this.getNodeParameter('pageSize', i) as number;
-							body.page = this.getNodeParameter('pageIndex', i) as number;
-						}
+						break;
+
 					}
+					case 'v3': {
+						endpoint = '/api/v3';
+						switch (resource) {
+							case 'devices': {
+								switch (operation) {
+									case 'getDeviceByID': {
+										// ----------------------------------
+										//        v3:devices:getDeviceByID
+										// ----------------------------------
+										method = 'GET';
+										const uuid = this.getNodeParameter('uuid', i) as string;
+										endpoint = '/devices/' + uuid;
+										break;
 
-					if (resource === 'backups') {
-						const operation = this.getNodeParameter('operation', i) as string;
-						if (operation === 'getDeviceBackups') {
-							endpoint = endpoint + '/devices/backups';
-							const deviceUUIDs = this.getNodeParameter(
-								'deviceUUIDs',
-								i,
-							) as IDataObject;
-							if (deviceUUIDs && Object.values(deviceUUIDs)[0]) {
-								// @ts-ignore
-								Object.values(deviceUUIDs)[0].forEach((element: IDataObject) => // TODO: fix possibly undefined tslint issue
-									deviceUUIDList.push(element.deviceUUID as string),
-								);
+									}
+									case 'getDevices': {
+										// ----------------------------------
+										//        v3:devices:getDevices
+										// ----------------------------------
+										method = 'GET';
+										endpoint = endpoint = endpoint + '/devices';
+
+										// map the parameters
+										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
+										if (additionalParameters.addresses) {
+											additionalParameters.addresses = ((additionalParameters.addresses as IDataObject).addressesValues as IDataObject[]).map(a => a.address);
+										}
+										if (additionalParameters.descriptions) {
+											additionalParameters.descriptions = ((additionalParameters.descriptions as IDataObject).descriptionValues as IDataObject[]).map(a => a.description);
+										}
+										if (additionalParameters.vendors) {
+											additionalParameters.vendors = ((additionalParameters.vendors as IDataObject).vendorsValues as IDataObject[]).map(a => a.vendor);
+										}
+										if (additionalParameters.types) {
+											additionalParameters.types = ((additionalParameters.types as IDataObject).typesValues as IDataObject[]).map(a => a.type);
+										}
+										if (additionalParameters.models) {
+											additionalParameters.models = ((additionalParameters.models as IDataObject).modelsValues as IDataObject[]).map(a => a.model);
+										}
+										if (additionalParameters.zoneUUIDs) {
+											additionalParameters.zoneUUIDs = ((additionalParameters.zoneUUIDs as IDataObject).zoneUUIDsValues as IDataObject[]).map(a => a.zoneUUID);
+										}
+										if (additionalParameters.scheduleUUIDs) {
+											additionalParameters.scheduleUUIDs = ((additionalParameters.scheduleUUIDs as IDataObject).scheduleUuidsValues as IDataObject[]).map(a => a.scheduleUUID);
+										}
+
+										Object.assign(qs, additionalParameters);
+										break;
+
+									}
+									default: {
+										throw new NodeOperationError(this.getNode(), `The resource "${resource}" is not supported!`);
+									}
+								}
+								break;
+
 							}
-							body.types = this.getNodeParameter('types', i) as string[];
-							body.latest = this.getNodeParameter('latest', i) as boolean;
-							body.validSince = this.getNodeParameter('since', i) as number;
-							body.validUntil = this.getNodeParameter('until', i) as number;
-							body.size = this.getNodeParameter('pageSize', i) as number;
-							body.page = this.getNodeParameter('pageIndex', i) as number;
-							body.deviceUuids = deviceUUIDList;
-						}
-						if (operation === 'getDiff') {
-							endpoint = endpoint + '/devices/backups:diff';
+							case 'backups': {
+								switch (operation) {
+									case 'getDeviceBackups': {
+										// ----------------------------------
+										//        v3:backups:getDeviceBackups
+										// ----------------------------------
+										method = 'GET';
+										endpoint = endpoint + '/devices/backups';
+										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
+										if (additionalParameters.deviceUuids) {
+											additionalParameters.deviceUuids = ((additionalParameters.deviceUuids as IDataObject).deviceUuidsValues as IDataObject[]).map(a => a.deviceUuid);
+										}
+										Object.assign(qs, additionalParameters);
+										break;
 
-							body.originalBackupUuid = this.getNodeParameter(
-								'originalBackupUuid',
-								i,
-							) as string;
-							body.revisedBackupUuid = this.getNodeParameter(
-								'revisedBackupUuid',
-								i,
-							) as string;
+									}
+									case 'getDiff': {
+										// ----------------------------------
+										//        v3:backups:getDiff
+										// ----------------------------------
+										method = 'POST';
+										endpoint = endpoint + '/devices/backups:diff';
+										body.originalBackupUuid = this.getNodeParameter('originalBackupUuid', i) as string;
+										body.revisedBackupUuid = this.getNodeParameter('revisedBackupUuid', i) as string;
+										break;
+
+									}
+									default: {
+										throw new NodeOperationError(this.getNode(), `The operation "${operation}" is not supported for resource "${resource}" and version "${apiVersion}"!`);
+									}
+								}
+								break;
+
+							}
+							default: {
+								throw new NodeOperationError(this.getNode(), `The resource "${resource}" is not supported for version "${apiVersion}"!`);
+							}
 						}
+						break;
+
+					}
+					default: {
+						throw new NodeOperationError(this.getNode(), `The API version "${apiVersion}" is not supported!`);
 					}
 				}
 
-				if (apiVersion === 'v2') {
-					endpoint = '/api/v2';
-					const resource = this.getNodeParameter('resource', i) as string;
-					if (resource === 'diff') {
-						const operation = this.getNodeParameter('operation', i) as string;
-						if (operation === 'getDevicesWithDifferentBackups') {
-							qs.since = this.getNodeParameter('since', i) as number;
-							qs.until = this.getNodeParameter('until', i) as number;
-							qs.page = this.getNodeParameter('pageIndex', i) as number;
-							qs.pageSize = this.getNodeParameter('pageSize', i) as number;
-
-							endpoint = endpoint + `/devices/findByChangedBackup`;
-						}
-					}
-					if (resource === 'devices') {
-						const address = this.getNodeParameter('address', i) as string;
-
-						endpoint = endpoint + `/devices/findByAddress/:${address}?attr=:`;
-					}
-				}
-
-				responseData = await unimusApiRequest.call(this, endpoint, body, qs);
-				responseData = JSON.parse(responseData);
+				responseData = await unimusApiRequest.call(this, method, endpoint, body, qs);
+				// responseData = JSON.parse(responseData); // TODO: is it needed?
 
 				if (Array.isArray(responseData)) {
 					returnData.push.apply(returnData, responseData as IDataObject[]);

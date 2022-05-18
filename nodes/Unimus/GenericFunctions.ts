@@ -15,6 +15,7 @@ export async function unimusApiRequest(
 		| IExecuteFunctions
 		| IExecuteSingleFunctions
 		| ILoadOptionsFunctions,
+		method: string,
 		endpoint: string,
 		body: IDataObject = {},
 		qs: IDataObject = {},
@@ -29,13 +30,15 @@ export async function unimusApiRequest(
 	}
 
 	const options: OptionsWithUri = {
+		method,
 		headers: {
-			Authorization: 'Bearer ' + credentials.unimusApiKey,
+			'Accept': 'application/json',
+			'Authorization': 'Bearer ' + credentials.unimusApiKey,
 		},
-		body,
 		qs,
-		method : 'GET',
+		body,
 		uri: uri || credentials.baseURL + endpoint,
+		json: true,
 	};
 
 	try {
