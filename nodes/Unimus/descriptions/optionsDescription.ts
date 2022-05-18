@@ -185,11 +185,15 @@ export const publicApiOperations = [
     /*        operation:getDevicesWithDifferentBackups, getDevices                                 */
     /* -------------------------------------------------------------------------- */
     {
-        displayName: 'Page Index',
-        name: 'pageIndex',
-        type: 'number',
-        description: 'Page index (OPTIONAL)',
-        default: null,
+		displayName: 'Add Shared Optional Fields',
+		name: 'optionalFields',
+		type: 'collection',
+    	placeholder: 'Add Field',
+    	default: {},
+		required: false,
+		typeOptions: {
+            multipleValues: false,
+		},
         displayOptions: {
             show: {
                 operation: [
@@ -199,277 +203,314 @@ export const publicApiOperations = [
                 ],
             },
         },
-        required: false,
-    },
-    {
-        displayName: 'Page Size',
-        name: 'pageSize',
-        type: 'number',
-        description: 'Page size (OPTIONAL)',
-        default: 2147483647,
-        displayOptions: {
-            show: {
-                operation: [
-                    'getDevicesWithDifferentBackups',
-                    'getDevices',
-                    'getDeviceBackups',
-                ],
-            },
-        },
-        required: false,
-    },
-    {
-        displayName: 'Since',
-        name: 'since',
-        type: 'number',
-        description: 'Start of time range in seconds (OPTIONAL) (DEFAULT = 0)',
-        default: 0,
-        displayOptions: {
-            show: {
-                operation: [
-                    'getDevicesWithDifferentBackups',
-                    'getDevices',
-                    'getDeviceBackups',
-                ],
-            },
-        },
-        required: false,
-    },
-    {
-        displayName: 'Until',
-        name: 'until',
-        type: 'number',
-        description:
-            'End of time range in seconds (OPTIONAL) (DEFAULT = time of the request)',
-        default: null,
-        displayOptions: {
-            show: {
-                operation: [
-                    'getDevicesWithDifferentBackups',
-                    'getDevices',
-                    'getDeviceBackups',
-                ],
-            },
-        },
-        required: false,
-    },
-
-    {
-        displayName: 'Addresses',
-        name: 'addresses',
-        placeholder: 'Add address',
-        type: 'fixedCollection',
-        default: '',
-        typeOptions: {
-            multipleValues: true,
-        },
-        displayOptions: {
-            show: {
-                operation: ['getDevices'],
-            },
-        },
-        description: '',
+		description:'Add Shared optional fields for devices and backups etc..',
         options: [
             {
-                name: 'addressesValues',
-                displayName: 'Address',
-                values: [
+                displayName: 'Page Index',
+                name: 'pageIndex',
+                value: 'pageIndex',
+                type: 'number',
+                description: 'Page index (OPTIONAL)',
+                default: null,
+                // displayOptions: {
+                //     show: {
+                //         operation: [
+                //             'getDevicesWithDifferentBackups',
+                //             'getDevices',
+                //             'getDeviceBackups',
+                //         ],
+                //     },
+                // },
+                required: false,
+            },
+            {
+                displayName: 'Page Size',
+                name: 'pageSize',
+                type: 'number',
+                description: 'Page size (OPTIONAL)',
+                default: 2147483647,
+                // displayOptions: {
+                //     show: {
+                //         operation: [
+                //             'getDevicesWithDifferentBackups',
+                //             'getDevices',
+                //             'getDeviceBackups',
+                //         ],
+                //     },
+                // },
+                required: false,
+            },
+            {
+                displayName: 'Since',
+                name: 'since',
+                type: 'number',
+                description: 'Start of time range in seconds (OPTIONAL) (DEFAULT = 0)',
+                default: 0,
+                // displayOptions: {
+                //     show: {
+                //         operation: [
+                //             'getDevicesWithDifferentBackups',
+                //             'getDevices',
+                //             'getDeviceBackups',
+                //         ],
+                //     },
+                // },
+                required: false,
+            },
+            {
+                displayName: 'Until',
+                name: 'until',
+                type: 'number',
+                description:
+                    'End of time range in seconds (OPTIONAL) (DEFAULT = time of the request)',
+                default: null,
+                // displayOptions: {
+                //     show: {
+                //         operation: [
+                //             'getDevicesWithDifferentBackups',
+                //             'getDevices',
+                //             'getDeviceBackups',
+                //         ],
+                //     },
+                // },
+                required: false,
+            },
+        ],
+	},
+    {
+		displayName: 'Add Device Optional Fields',
+		name: 'optionalFieldsDevice',
+		type: 'collection',
+    	placeholder: 'Add Field',
+    	default: {},
+		required: false,
+		typeOptions: {
+            multipleValues: false,
+		},
+        displayOptions: {
+            show: {
+                operation: [
+                    // 'getDevicesWithDifferentBackups',
+                    'getDevices',
+                    // 'getDeviceBackups',
+                ],
+            },
+        },
+		description:'Add optional fields specific for get device',
+        options: [  
+            {
+                displayName: 'Addresses',
+                name: 'addresses',
+                placeholder: 'Add address',
+                type: 'fixedCollection',
+                default: '',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                // displayOptions: {
+                //     show: {
+                //         operation: ['getDevices'],
+                //     },
+                // },
+                description: '',
+                options: [
                     {
+                        name: 'addressesValues',
                         displayName: 'Address',
-                        name: 'address',
-                        type: 'string',
-                        default: '',
+                        values: [
+                            {
+                                displayName: 'Address',
+                                name: 'address',
+                                type: 'string',
+                                default: '',
+                            },
+                        ],
                     },
                 ],
             },
-        ],
-    },
-
-    {
-        displayName: 'Descriptions',
-        name: 'descriptions',
-        placeholder: 'Add description',
-        type: 'fixedCollection',
-        default: '',
-        typeOptions: {
-            multipleValues: true,
-        },
-        displayOptions: {
-            show: {
-                operation: ['getDevices'],
-            },
-        },
-        description: '',
-        options: [
             {
-                name: 'descriptionValues',
-                displayName: 'Description',
-                values: [
+                displayName: 'Descriptions',
+                name: 'descriptions',
+                placeholder: 'Add description',
+                type: 'fixedCollection',
+                default: '',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                // displayOptions: {
+                //     show: {
+                //         operation: ['getDevices'],
+                //     },
+                // },
+                description: '',
+                options: [
                     {
+                        name: 'descriptionValues',
                         displayName: 'Description',
-                        name: 'description',
-                        type: 'string',
-                        default: '',
+                        values: [
+                            {
+                                displayName: 'Description',
+                                name: 'description',
+                                type: 'string',
+                                default: '',
+                            },
+                        ],
                     },
                 ],
             },
-        ],
-    },
-
-    {
-        displayName: 'Vendors',
-        name: 'vendors',
-        placeholder: 'Add vendors',
-        type: 'fixedCollection',
-        default: '',
-        typeOptions: {
-            multipleValues: true,
-        },
-        displayOptions: {
-            show: {
-                operation: ['getDevices'],
-            },
-        },
-        description: '',
-        options: [
             {
-                name: 'vendorsValues',
-                displayName: 'Vendor',
-                values: [
+                displayName: 'Vendors',
+                name: 'vendors',
+                placeholder: 'Add vendors',
+                type: 'fixedCollection',
+                default: '',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                // displayOptions: {
+                //     show: {
+                //         operation: ['getDevices'],
+                //     },
+                // },
+                description: '',
+                options: [
                     {
+                        name: 'vendorsValues',
                         displayName: 'Vendor',
-                        name: 'vendor',
-                        type: 'string',
-                        default: '',
+                        values: [
+                            {
+                                displayName: 'Vendor',
+                                name: 'vendor',
+                                type: 'string',
+                                default: '',
+                            },
+                        ],
                     },
                 ],
             },
-        ],
-    },
-
-    {
-        displayName: 'Types',
-        name: 'types',
-        placeholder: 'Add type',
-        type: 'fixedCollection',
-        default: '',
-        typeOptions: {
-            multipleValues: true,
-        },
-        displayOptions: {
-            show: {
-                operation: ['getDevices'],
-            },
-        },
-        description: '',
-        options: [
             {
-                name: 'typesValues',
-                displayName: 'Type',
-                values: [
+                displayName: 'Types',
+                name: 'types',
+                placeholder: 'Add type',
+                type: 'fixedCollection',
+                default: '',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                // displayOptions: {
+                //     show: {
+                //         operation: ['getDevices'],
+                //     },
+                // },
+                description: '',
+                options: [
                     {
+                        name: 'typesValues',
                         displayName: 'Type',
-                        name: 'type',
-                        type: 'string',
-                        default: '',
+                        values: [
+                            {
+                                displayName: 'Type',
+                                name: 'type',
+                                type: 'string',
+                                default: '',
+                            },
+                        ],
                     },
                 ],
             },
-        ],
-    },
-
-    {
-        displayName: 'Models',
-        name: 'models',
-        placeholder: 'Add model',
-        type: 'fixedCollection',
-        default: '',
-        typeOptions: {
-            multipleValues: true,
-        },
-        displayOptions: {
-            show: {
-                operation: ['getDevices'],
-            },
-        },
-        description: '',
-        options: [
             {
-                name: 'modelsValues',
-                displayName: 'Type',
-                values: [
+                displayName: 'Models',
+                name: 'models',
+                placeholder: 'Add model',
+                type: 'fixedCollection',
+                default: '',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                // displayOptions: {
+                //     show: {
+                //         operation: ['getDevices'],
+                //     },
+                // },
+                description: '',
+                options: [
                     {
-                        displayName: 'Model',
-                        name: 'model',
-                        type: 'string',
-                        default: '',
+                        name: 'modelsValues',
+                        displayName: 'Type',
+                        values: [
+                            {
+                                displayName: 'Model',
+                                name: 'model',
+                                type: 'string',
+                                default: '',
+                            },
+                        ],
                     },
                 ],
             },
-        ],
-    },
-
-    {
-        displayName: 'Zone UUIDs',
-        name: 'zoneUUIDs',
-        placeholder: 'Add Zone UUID',
-        type: 'fixedCollection',
-        default: '',
-        typeOptions: {
-            multipleValues: true,
-        },
-        displayOptions: {
-            show: {
-                operation: ['getDevices'],
-            },
-        },
-        description: '',
-        options: [
             {
-                name: 'zoneUUIDsValues',
-                displayName: 'Zone UUID',
-                values: [
+                displayName: 'Zone UUIDs',
+                name: 'zoneUUIDs',
+                placeholder: 'Add Zone UUID',
+                type: 'fixedCollection',
+                default: '',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                // displayOptions: {
+                //     show: {
+                //         operation: ['getDevices'],
+                //     },
+                // },
+                description: '',
+                options: [
                     {
+                        name: 'zoneUUIDsValues',
                         displayName: 'Zone UUID',
-                        name: 'zoneUUID',
-                        type: 'string',
-                        default: '',
+                        values: [
+                            {
+                                displayName: 'Zone UUID',
+                                name: 'zoneUUID',
+                                type: 'string',
+                                default: '',
+                            },
+                        ],
                     },
                 ],
             },
-        ],
-    },
-
-    {
-        displayName: 'Schedule UUIDs',
-        name: 'scheduleUUIDs',
-        placeholder: 'Add Schedule UUID',
-        type: 'fixedCollection',
-        default: '',
-        typeOptions: {
-            multipleValues: true,
-        },
-        displayOptions: {
-            show: {
-                operation: ['getDevices'],
-            },
-        },
-        description: '',
-        options: [
             {
-                name: 'scheduleUuidsValues',
-                displayName: 'Schedule UUID',
-                values: [
+                displayName: 'Schedule UUIDs',
+                name: 'scheduleUUIDs',
+                placeholder: 'Add Schedule UUID',
+                type: 'fixedCollection',
+                default: '',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                // displayOptions: {
+                //     show: {
+                //         operation: ['getDevices'],
+                //     },
+                // },
+                description: '',
+                options: [
                     {
+                        name: 'scheduleUuidsValues',
                         displayName: 'Schedule UUID',
-                        name: 'scheduleUUID',
-                        type: 'string',
-                        default: '',
+                        values: [
+                            {
+                                displayName: 'Schedule UUID',
+                                name: 'scheduleUUID',
+                                type: 'string',
+                                default: '',
+                            },
+                        ],
                     },
                 ],
             },
         ],
-    },
+	},
+    
 
     /* -------------------------------------------------------------------------- */
     /*        operation: getDeviceByID                                */
@@ -507,69 +548,88 @@ export const publicApiOperations = [
     /*        operation:getDeviceBackups                            */
     /* -------------------------------------------------------------------------- */
     {
-        displayName: 'Device UUIDs',
-        name: 'deviceUUIDs',
-        placeholder: 'Add Device UUID',
-        type: 'fixedCollection',
-        default: '',
-        typeOptions: {
-            multipleValues: true,
-        },
+		displayName: 'Add DeviceBackups Optional Fields',
+		name: 'optionalFieldsDeviceBackups',
+		type: 'collection',
+    	placeholder: 'Add Field',
+    	default: {},
+		required: false,
+		typeOptions: {
+            multipleValues: false,
+		},
         displayOptions: {
             show: {
                 operation: ['getDeviceBackups'],
             },
         },
-        description: '',
-        options: [
+		description:'Add optional fields specific for get device',
+        options: [  
             {
-                name: 'deviceUuidsValues',
-                displayName: 'Device UUID',
-                values: [
+                displayName: 'Device UUIDs',
+                name: 'deviceUUIDs',
+                placeholder: 'Add Device UUID',
+                type: 'fixedCollection',
+                default: '',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                // displayOptions: {
+                //     show: {
+                //         operation: ['getDeviceBackups'],
+                //     },
+                // },
+                description: '',
+                options: [
                     {
+                        name: 'deviceUuidsValues',
                         displayName: 'Device UUID',
-                        name: 'deviceUUID',
-                        type: 'string',
-                        default: '',
+                        values: [
+                            {
+                                displayName: 'Device UUID',
+                                name: 'deviceUUID',
+                                type: 'string',
+                                default: '',
+                            },
+                        ],
                     },
                 ],
             },
-        ],
-    },
-    {
-        displayName: 'Latest',
-        name: 'latest',
-        type: 'boolean',
-        description: 'Filter backups by valid until timestamp',
-        default: true,
-        displayOptions: {
-            show: {
-                operation: ['getDeviceBackups'],
-            },
-        },
-        required: false,
-    },
-    {
-        displayName: 'Types',
-        name: 'types',
-        type: 'multiOptions',
-        displayOptions: {
-            show: {
-                operation: ['getDeviceBackups'],
-            },
-        },
-        options: [
             {
-                name: 'BINARY',
-                value: 'BINARY',
+                displayName: 'Latest',
+                name: 'latest',
+                type: 'boolean',
+                description: 'Filter backups by valid until timestamp',
+                default: true,
+                // displayOptions: {
+                //     show: {
+                //         operation: ['getDeviceBackups'],
+                //     },
+                // },
+                required: false,
             },
             {
-                name: 'TEXT',
-                value: 'TEXT',
+                displayName: 'Types',
+                name: 'types',
+                type: "options",
+                placeholder: 'Choose Type',
+    	        default: {},
+                options: [
+                    {
+                        displayName: 'Binary',
+                        name: 'binary',
+                        value: 'binary',
+                        type: 'string',
+                    },
+                    {
+                        displayName: 'Text',
+                        name: 'text',
+                        value: 'text',
+                        type: 'string',
+                    },
+                ],
+                description: 'The events to be monitored',
             },
         ],
-        default: [], // Initially selected options
-        description: 'The events to be monitored',
     },
 
     /* -------------------------------------------------------------------------- */
