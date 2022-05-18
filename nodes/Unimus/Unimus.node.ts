@@ -1,7 +1,6 @@
-import { IExecuteFunctions } from 'n8n-core';
-
 import {
 	IDataObject,
+	IExecuteFunctions,
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
@@ -637,9 +636,10 @@ export class Unimus implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
-		let uri = '';
+		let endpoint = '';
 		let responseData;
 		const body: IDataObject = {};
+		const qs: IDataObject = {};
 		const addressList: string[] = [];
 		const descriptionList: string[] = [];
 		const vendorList: string[] = [];
@@ -653,16 +653,16 @@ export class Unimus implements INodeType {
 			try {
 				const apiVersion = this.getNodeParameter('apiVersion', i) as string;
 				if (apiVersion === 'v3') {
-					uri = '/api/v3';
+					endpoint = '/api/v3';
 					const resource = this.getNodeParameter('resource', i) as string;
 					if (resource === 'devices') {
 						const operation = this.getNodeParameter('operation', i) as string;
 						if (operation === 'getDeviceByID') {
 							const uuid = this.getNodeParameter('uuid', i) as string;
-							uri = '/devices/' + uuid;
+							endpoint = '/devices/' + uuid;
 						}
 						if (operation === 'getDevices') {
-							uri = uri = uri + '/devices';
+							endpoint = endpoint = endpoint + '/devices';
 							const addresses = this.getNodeParameter('addresses', i) as IDataObject;
 							const descriptions = this.getNodeParameter(
 								'descriptions',
@@ -735,7 +735,7 @@ export class Unimus implements INodeType {
 					if (resource === 'backups') {
 						const operation = this.getNodeParameter('operation', i) as string;
 						if (operation === 'getDeviceBackups') {
-							uri = uri + '/devices/backups';
+							endpoint = endpoint + '/devices/backups';
 							const deviceUUIDs = this.getNodeParameter(
 								'deviceUUIDs',
 								i,
@@ -755,7 +755,7 @@ export class Unimus implements INodeType {
 							body.deviceUuids = deviceUUIDList;
 						}
 						if (operation === 'getDiff') {
-							uri = uri + '/devices/backups:diff';
+							endpoint = endpoint + '/devices/backups:diff';
 
 							body.originalBackupUuid = this.getNodeParameter(
 								'originalBackupUuid',
@@ -770,28 +770,27 @@ export class Unimus implements INodeType {
 				}
 
 				if (apiVersion === 'v2') {
-					uri = '/api/v2';
+					endpoint = '/api/v2';
 					const resource = this.getNodeParameter('resource', i) as string;
 					if (resource === 'diff') {
 						const operation = this.getNodeParameter('operation', i) as string;
 						if (operation === 'getDevicesWithDifferentBackups') {
-							const since = this.getNodeParameter('since', i) as number;
-							const until = this.getNodeParameter('until', i) as number;
-							const pageIndex = this.getNodeParameter('pageIndex', i) as number;
-							const pageSize = this.getNodeParameter('pageSize', i) as number;
-							uri =
-								uri +
-								`/devices/findByChangedBackup?page=${pageIndex}&size=${pageSize}&since=${since}&until=${until}`;
+							qs.since = this.getNodeParameter('since', i) as number;
+							qs.until = this.getNodeParameter('until', i) as number;
+							qs.page = this.getNodeParameter('pageIndex', i) as number;
+							qs.pageSize = this.getNodeParameter('pageSize', i) as number;
+
+							endpoint = endpoint + `/devices/findByChangedBackup`;
 						}
 					}
 					if (resource === 'devices') {
 						const address = this.getNodeParameter('address', i) as string;
 
-						uri = uri + `/devices/findByAddress/:${address}?attr=:`;
+						endpoint = endpoint + `/devices/findByAddress/:${address}?attr=:`;
 					}
 				}
 
-				responseData = await unimusApiRequest.call(this, body, uri);
+				responseData = await unimusApiRequest.call(this, endpoint, body, qs);
 				responseData = JSON.parse(responseData);
 
 				if (Array.isArray(responseData)) {

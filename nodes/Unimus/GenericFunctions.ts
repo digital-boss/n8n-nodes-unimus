@@ -1,13 +1,13 @@
+import { OptionsWithUri } from 'request';
+
 import {
+	IDataObject,
 	IExecuteFunctions,
 	IExecuteSingleFunctions,
 	IHookFunctions,
-	ILoadOptionsFunctions,
-} from 'n8n-core';
-
-import { OptionsWithUri } from 'request';
-
-import { IDataObject } from 'n8n-workflow';
+	ILoadOptionsFunctions, NodeApiError,
+	NodeOperationError
+} from 'n8n-workflow';
 
 export async function unimusApiRequest(
 	this:
@@ -15,22 +15,32 @@ export async function unimusApiRequest(
 		| IExecuteFunctions
 		| IExecuteSingleFunctions
 		| ILoadOptionsFunctions,
+		endpoint: string,
 		body: IDataObject = {},
-		uri: string,
-	// tslint:disable-next-line:no-any
+		qs: IDataObject = {},
+		uri?: string,
+// tslint:disable-next-line:no-any
 ): Promise<any> {
-	const options: OptionsWithUri = {
-		headers: {},
-		body,
-		method : 'GET',
-		uri,
-	};
+
 	const credentials = await this.getCredentials('unimusApi');
-	if (credentials !== undefined && credentials.unimusApiKey && credentials.baseURL) {
-		options.headers!['Authorization'] = 'Bearer ' + credentials.unimusApiKey;
-		const baseURL = credentials.baseURL;
-		options.uri = baseURL +uri;
+
+	if (credentials === undefined) {
+		throw new NodeOperationError(this.getNode(), 'No credentials got returned!');
 	}
 
-	return await this.helpers.request!(options);
+	const options: OptionsWithUri = {
+		headers: {
+			Authorization: 'Bearer ' + credentials.unimusApiKey,
+		},
+		body,
+		qs,
+		method : 'GET',
+		uri: uri || credentials.baseURL + endpoint,
+	};
+
+	try {
+		return this.helpers.request!(options);
+	} catch (error) {
+		throw new NodeApiError(this.getNode(), error);
+	}
 }
