@@ -799,10 +799,13 @@ export class Unimus implements INodeType {
 					returnData.push(responseData as IDataObject);
 				}
 			} catch (error) {
-				returnData.push(error as IDataObject);
+				if (this.continueOnFail()) {
+					returnData.push({ error: error.message });
+					continue;
+				}
+				throw error;
 			}
 		}
-
 		return [this.helpers.returnJsonArray(returnData)];
 	}
 }
