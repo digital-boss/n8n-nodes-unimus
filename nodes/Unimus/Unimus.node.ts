@@ -30,6 +30,7 @@ export class Unimus implements INodeType {
 		icon: 'file:unimus.png',
 		group: ['transform'],
 		version: 1,
+		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"] + ": " + $parameter["apiVersion"]}}',
 		description: `Consume Unimus API (v.${version})`,
 		defaults: {
 			name: 'Unimus',
