@@ -60,8 +60,8 @@ export const v3backupsFields: INodeProperties[] = [
 				description: 'Filter backups by devices',
 				options: [
 					{
-						name: 'deviceUuidsValues',
 						displayName: 'Device UUID',
+						name: 'deviceUuidsValues',
 						values: [
 							{
 								displayName: 'Device UUID',

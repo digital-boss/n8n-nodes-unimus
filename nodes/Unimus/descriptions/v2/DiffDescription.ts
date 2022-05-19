@@ -45,15 +45,15 @@ export const v2diffFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Page Index',
-				name: 'pageIndex',
+				displayName: 'Page',
+				name: 'page',
 				type: 'number',
 				default: '',
 				description: 'The page index',
 			},
 			{
-				displayName: 'Page Size',
-				name: 'pageSize',
+				displayName: 'Page',
+				name: 'page',
 				type: 'number',
 				default: '',
 				description: 'The page size',

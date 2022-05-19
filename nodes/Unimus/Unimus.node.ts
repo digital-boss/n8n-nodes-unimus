@@ -192,11 +192,11 @@ export class Unimus implements INodeType {
 										if (additionalParameters.models) {
 											additionalParameters.models = ((additionalParameters.models as IDataObject).modelsValues as IDataObject[]).map(a => a.model);
 										}
-										if (additionalParameters.zoneUUIDs) {
-											additionalParameters.zoneUUIDs = ((additionalParameters.zoneUUIDs as IDataObject).zoneUUIDsValues as IDataObject[]).map(a => a.zoneUUID);
+										if (additionalParameters.zoneUuids) {
+											additionalParameters.zoneUuids = ((additionalParameters.zoneUuids as IDataObject).zoneUuidsValues as IDataObject[]).map(a => a.zoneUuid);
 										}
-										if (additionalParameters.scheduleUUIDs) {
-											additionalParameters.scheduleUUIDs = ((additionalParameters.scheduleUUIDs as IDataObject).scheduleUuidsValues as IDataObject[]).map(a => a.scheduleUUID);
+										if (additionalParameters.scheduleUuids) {
+											additionalParameters.scheduleUuids = ((additionalParameters.scheduleUuids as IDataObject).scheduleUuidsValues as IDataObject[]).map(a => a.scheduleUuid);
 										}
 
 										Object.assign(qs, additionalParameters);

@@ -175,7 +175,7 @@ export const v3devicesFields: INodeProperties[] = [
 			},
 			{
 				displayName: 'Zone UUIDs',
-				name: 'zoneUUIDs',
+				name: 'zoneUuids',
 				placeholder: 'Add Zone UUID',
 				type: 'fixedCollection',
 				typeOptions: {
@@ -185,12 +185,12 @@ export const v3devicesFields: INodeProperties[] = [
 				description: '',
 				options: [
 					{
-						name: 'zoneUUIDsValues',
 						displayName: 'Zone UUID',
+						name: 'zoneUuidsValues',
 						values: [
 							{
 								displayName: 'Zone UUID',
-								name: 'zoneUUID',
+								name: 'zoneUuid',
 								type: 'string',
 								default: '',
 							},
@@ -200,7 +200,7 @@ export const v3devicesFields: INodeProperties[] = [
 			},
 			{
 				displayName: 'Schedule UUIDs',
-				name: 'scheduleUUIDs',
+				name: 'scheduleUuids',
 				placeholder: 'Add Schedule UUID',
 				type: 'fixedCollection',
 				typeOptions: {
@@ -210,12 +210,12 @@ export const v3devicesFields: INodeProperties[] = [
 				description: '',
 				options: [
 					{
-						name: 'scheduleUuidsValues',
 						displayName: 'Schedule UUID',
+						name: 'scheduleUuidsValues',
 						values: [
 							{
 								displayName: 'Schedule UUID',
-								name: 'scheduleUUID',
+								name: 'scheduleUuid',
 								type: 'string',
 								default: '',
 							},
