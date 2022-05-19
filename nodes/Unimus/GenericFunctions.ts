@@ -39,6 +39,7 @@ export async function unimusApiRequest(
 		body,
 		uri: uri || credentials.baseURL + endpoint,
 		json: true,
+		rejectUnauthorized: !this.getNodeParameter('allowUnauthorizedCerts', 0, false) as boolean,
 	};
 
 	try {

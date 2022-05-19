@@ -50,6 +50,13 @@ export class Unimus implements INodeType {
 			//         Versions
 			// ----------------------------------
 			{
+				displayName: 'Ignore SSL Issues',
+				name: 'allowUnauthorizedCerts',
+				type: 'boolean',
+				default: false,
+				description: 'Still download the response even if SSL certificate validation is not possible',
+			},
+			{
 				displayName: 'API Version',
 				name: 'apiVersion',
 				type: 'options',
