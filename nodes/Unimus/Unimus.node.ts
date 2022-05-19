@@ -133,7 +133,7 @@ export class Unimus implements INodeType {
 										// ----------------------------------
 										method = 'GET';
 										const address = this.getNodeParameter('address', i) as string;
-										endpoint = endpoint + `/devices/findByAddress/:${address}`;
+										endpoint = endpoint + `/devices/findByAddress/${address}`;
 										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
 										Object.assign(qs, additionalParameters);
 										break;
