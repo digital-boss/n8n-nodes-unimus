@@ -42,6 +42,13 @@ export async function unimusApiRequest(
 		rejectUnauthorized: !this.getNodeParameter('allowUnauthorizedCerts', 0, false) as boolean,
 	};
 
+	if (Object.keys(options.qs).length === 0) {
+		delete options.qs;
+	}
+	if (Object.keys(options.body).length === 0) {
+		delete options.body;
+	}
+
 	try {
 		return this.helpers.request!(options);
 	} catch (error) {
