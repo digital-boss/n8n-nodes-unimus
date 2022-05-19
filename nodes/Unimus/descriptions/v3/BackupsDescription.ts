@@ -35,10 +35,10 @@ export const v3backupsFields: INodeProperties[] = [
 	/*                          backups:getDeviceBackups                         */
 	/* ------------------------------------------------------------------------- */
 	{
-		displayName: 'Additional Fields',
-		name: 'additionalFields',
+		displayName: 'Additional Parameters',
+		name: 'additionalParameters',
 		type: 'collection',
-		placeholder: 'Add Field',
+		placeholder: 'Add Parameter',
 		default: {},
 		displayOptions: {
 			show: {
