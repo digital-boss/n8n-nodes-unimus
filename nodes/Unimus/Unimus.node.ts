@@ -256,6 +256,10 @@ export class Unimus implements INodeType {
 
 				responseData = await unimusApiRequest.call(this, method, endpoint, body, qs);
 
+				if (Object.keys(responseData).length === 0) {
+					responseData = { success: true };
+				}
+
 				if (Array.isArray(responseData)) {
 					returnData.push.apply(returnData, responseData as IDataObject[]);
 				} else {

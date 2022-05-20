@@ -4,8 +4,8 @@ import {
 } from 'n8n-workflow';
 
 export class UnimusApi implements ICredentialType {
+	displayName = 'Unimus API';
 	name = 'unimusApi';
-	displayName = 'UNIMUS API';
 	documentationUrl = 'unimus';
 	properties: INodeProperties[] = [
 		{
@@ -16,7 +16,7 @@ export class UnimusApi implements ICredentialType {
 		},
 		{
 			displayName: 'API Key',
-			name: 'unimusApiKey',
+			name: 'apiKey',
 			type: 'string',
 			typeOptions: {
 				password: true,

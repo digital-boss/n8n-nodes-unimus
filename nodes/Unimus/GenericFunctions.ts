@@ -34,7 +34,7 @@ export async function unimusApiRequest(
 		method,
 		headers: {
 			'Accept': 'application/json',
-			'Authorization': 'Bearer ' + credentials.unimusApiKey,
+			'Authorization': `Bearer ${credentials.apiKey}`,
 		},
 		qs,
 		body,
