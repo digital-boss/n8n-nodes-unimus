@@ -52,11 +52,11 @@ export const v2diffFields: INodeProperties[] = [
 				description: 'The page index',
 			},
 			{
-				displayName: 'Page',
-				name: 'page',
+				displayName: 'Size',
+				name: 'size',
 				type: 'number',
 				default: '',
-				description: 'The page size',
+				description: 'The page size. Default: 2147483647.',
 			},
 			{
 				displayName: 'Since',

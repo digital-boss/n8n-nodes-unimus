@@ -5,7 +5,8 @@ import {
 	IExecuteFunctions,
 	IExecuteSingleFunctions,
 	IHookFunctions,
-	ILoadOptionsFunctions, NodeApiError,
+	ILoadOptionsFunctions,
+	NodeApiError,
 	NodeOperationError
 } from 'n8n-workflow';
 

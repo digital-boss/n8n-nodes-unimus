@@ -88,8 +88,8 @@ export class Unimus implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
-		let endpoint = '';
-		let method;
+		let endpoint: string;
+		let method: string;
 		let responseData;
 		const body: IDataObject = {};
 		const qs: IDataObject = {};
@@ -103,7 +103,6 @@ export class Unimus implements INodeType {
 
 				switch (apiVersion) {
 					case 'v2': {
-						endpoint = '/api/v2';
 						switch (resource) {
 							case 'diff': {
 								switch (operation) {
@@ -112,7 +111,7 @@ export class Unimus implements INodeType {
 										//        v3:devices:getDevicesWithDifferentBackups
 										// ----------------------------------
 										method = 'GET';
-										endpoint = endpoint + `/devices/findByChangedBackup`;
+										endpoint = `/api/v2/devices/findByChangedBackup`;
 										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
 										Object.assign(qs, additionalParameters);
 										break;
@@ -133,7 +132,7 @@ export class Unimus implements INodeType {
 										// ----------------------------------
 										method = 'GET';
 										const address = this.getNodeParameter('address', i) as string;
-										endpoint = endpoint + `/devices/findByAddress/${address}`;
+										endpoint = `/api/v2/devices/findByAddress/${address}`;
 										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
 										Object.assign(qs, additionalParameters);
 										break;
@@ -154,7 +153,6 @@ export class Unimus implements INodeType {
 
 					}
 					case 'v3': {
-						endpoint = '/api/v3';
 						switch (resource) {
 							case 'devices': {
 								switch (operation) {
@@ -164,7 +162,7 @@ export class Unimus implements INodeType {
 										// ----------------------------------
 										method = 'GET';
 										const uuid = this.getNodeParameter('uuid', i) as string;
-										endpoint = '/devices/' + uuid;
+										endpoint = `/api/v3/devices/${uuid}`;
 										break;
 
 									}
@@ -173,7 +171,7 @@ export class Unimus implements INodeType {
 										//        v3:devices:getDevices
 										// ----------------------------------
 										method = 'GET';
-										endpoint = endpoint = endpoint + '/devices';
+										endpoint = '/api/v3/devices';
 
 										// map the parameters
 										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
@@ -217,7 +215,7 @@ export class Unimus implements INodeType {
 										//        v3:backups:getDeviceBackups
 										// ----------------------------------
 										method = 'GET';
-										endpoint = endpoint + '/devices/backups';
+										endpoint = '/api/v3/devices/backups';
 										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
 										if (additionalParameters.deviceUuids) {
 											additionalParameters.deviceUuids = ((additionalParameters.deviceUuids as IDataObject).deviceUuidsValues as IDataObject[]).map(a => a.deviceUuid);
@@ -231,7 +229,7 @@ export class Unimus implements INodeType {
 										//        v3:backups:getDiff
 										// ----------------------------------
 										method = 'POST';
-										endpoint = endpoint + '/devices/backups:diff';
+										endpoint = '/api/v3/devices/backups:diff';
 										body.originalBackupUuid = this.getNodeParameter('originalBackupUuid', i) as string;
 										body.revisedBackupUuid = this.getNodeParameter('revisedBackupUuid', i) as string;
 										break;
@@ -257,7 +255,6 @@ export class Unimus implements INodeType {
 				}
 
 				responseData = await unimusApiRequest.call(this, method, endpoint, body, qs);
-				// responseData = JSON.parse(responseData); // TODO: is it needed?
 
 				if (Array.isArray(responseData)) {
 					returnData.push.apply(returnData, responseData as IDataObject[]);
