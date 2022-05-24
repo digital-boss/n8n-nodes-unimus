@@ -1,6 +1,9 @@
 import {
-	IDataObject,
 	IExecuteFunctions,
+} from 'n8n-core';
+
+import {
+	IDataObject,
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
@@ -70,7 +73,7 @@ export class Unimus implements INodeType {
 						value: 'v3',
 					},
 				],
-				default: 'v3',
+				default: 'v2',
 				required: true,
 			},
 			...resources,
@@ -108,7 +111,7 @@ export class Unimus implements INodeType {
 								switch (operation) {
 									case 'getDevicesWithDifferentBackups': {
 										// ----------------------------------
-										//        v3:devices:getDevicesWithDifferentBackups
+										//        v2:devices:getDevicesWithDifferentBackups
 										// ----------------------------------
 										method = 'GET';
 										endpoint = `/api/v2/devices/findByChangedBackup`;
@@ -128,7 +131,7 @@ export class Unimus implements INodeType {
 								switch (operation) {
 									case 'getDeviceByAddress': {
 										// ----------------------------------
-										//        v3:devices:getDeviceByAddress
+										//        v2:devices:getDeviceByAddress
 										// ----------------------------------
 										method = 'GET';
 										const address = this.getNodeParameter('address', i) as string;
