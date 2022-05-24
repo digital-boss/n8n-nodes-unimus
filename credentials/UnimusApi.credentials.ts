@@ -9,14 +9,14 @@ export class UnimusApi implements ICredentialType {
 	documentationUrl = 'unimus';
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Base URL',
-			name: 'baseURL',
+			displayName: 'URL',
+			name: 'url',
 			type: 'string',
 			default: '',
 		},
 		{
-			displayName: 'API Key',
-			name: 'apiKey',
+			displayName: 'Token',
+			name: 'token',
 			type: 'string',
 			typeOptions: {
 				password: true,

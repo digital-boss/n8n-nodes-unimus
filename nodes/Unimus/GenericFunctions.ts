@@ -29,7 +29,7 @@ export async function unimusApiRequest(
 // tslint:disable-next-line:no-any
 ): Promise<any> {
 
-	const credentials = await this.getCredentials('unimusApi');
+	const credentials = await this.getCredentials('unimusApi') as IDataObject;
 
 	if (credentials === undefined) {
 		throw new NodeOperationError(this.getNode(), 'No credentials got returned!');
@@ -39,11 +39,11 @@ export async function unimusApiRequest(
 		method,
 		headers: {
 			'Accept': 'application/json',
-			'Authorization': `Bearer ${credentials.apiKey}`,
+			'Authorization': `Bearer ${credentials.token}`,
 		},
 		qs,
 		body,
-		uri: uri || credentials.baseURL + endpoint,
+		uri: uri || credentials.url + endpoint,
 		json: true,
 		rejectUnauthorized: !this.getNodeParameter('allowUnauthorizedCerts', 0, false) as boolean,
 	};
