@@ -4,13 +4,13 @@ import {
 
 import {
 	IExecuteFunctions,
+	IExecuteSingleFunctions,
+	IHookFunctions,
+	ILoadOptionsFunctions,
 } from 'n8n-core';
 
 import {
 	IDataObject,
-	IExecuteSingleFunctions,
-	IHookFunctions,
-	ILoadOptionsFunctions,
 	NodeApiError,
 	NodeOperationError
 } from 'n8n-workflow';
@@ -43,7 +43,7 @@ export async function unimusApiRequest(
 		},
 		qs,
 		body,
-		uri: uri || credentials.url + endpoint,
+		uri: uri || `${credentials.url}${endpoint}`,
 		json: true,
 		rejectUnauthorized: !this.getNodeParameter('allowUnauthorizedCerts', 0, false) as boolean,
 	};
