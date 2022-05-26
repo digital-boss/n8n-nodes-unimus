@@ -11,12 +11,14 @@ export class UnimusApi implements ICredentialType {
 		{
 			displayName: 'URL',
 			name: 'url',
+			required: true,
 			type: 'string',
 			default: '',
 		},
 		{
 			displayName: 'Token',
 			name: 'token',
+			required: true,
 			type: 'string',
 			typeOptions: {
 				password: true,
