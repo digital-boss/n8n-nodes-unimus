@@ -205,7 +205,7 @@ export class Unimus implements INodeType {
 										// ----------------------------------
 										method = 'GET';
 										endpoint = `/api/v2/backups/diff`;
-										qs.idOrig = this.getNodeParameter('idOrig', i) as IDataObject;
+										qs.origId = this.getNodeParameter('origId', i) as IDataObject;
 										qs.revId = this.getNodeParameter('revId', i) as IDataObject;
 										break;
 

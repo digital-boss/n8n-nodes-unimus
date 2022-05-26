@@ -84,7 +84,7 @@ export const v2diffFields: INodeProperties[] = [
 	/* ------------------------------------------------------------------------- */
 	{
 		displayName: 'Original ID',
-		name: 'idOrig',
+		name: 'origId',
 		required: true,
 		type: 'number',
 		displayOptions: {
