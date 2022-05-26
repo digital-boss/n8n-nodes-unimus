@@ -10,7 +10,7 @@ export const resources: INodeProperties[] = [
 		name: 'resource',
 		required: true,
 		type: 'options',
-		default: 'diff',
+		default: 'devices',
 		displayOptions: {
 			show: {
 				apiVersion: ['v2'],
@@ -18,12 +18,16 @@ export const resources: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Diff',
-				value: 'diff',
+				name: 'Backups',
+				value: 'backups',
 			},
 			{
 				name: 'Devices',
 				value: 'devices',
+			},
+			{
+				name: 'Diff',
+				value: 'diff',
 			},
 		],
 	},
@@ -44,12 +48,12 @@ export const resources: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Devices',
-				value: 'devices',
-			},
-			{
 				name: 'Backups',
 				value: 'backups',
+			},
+			{
+				name: 'Devices',
+				value: 'devices',
 			},
 		],
 	},

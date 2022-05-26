@@ -16,6 +16,8 @@ import { version } from '../version';
 
 import {
 	resources,
+	v2backupsFields,
+	v2backupsOperations,
 	v2devicesFields,
 	v2devicesOperations,
 	v2diffFields,
@@ -77,6 +79,8 @@ export class Unimus implements INodeType {
 				required: true,
 			},
 			...resources,
+			...v2backupsOperations,
+			...v2backupsFields,
 			...v2devicesOperations,
 			...v2devicesFields,
 			...v2diffOperations,
@@ -107,14 +111,15 @@ export class Unimus implements INodeType {
 				switch (apiVersion) {
 					case 'v2': {
 						switch (resource) {
-							case 'diff': {
+							case 'backups': {
 								switch (operation) {
-									case 'getDevicesWithDifferentBackups': {
+									case 'getDeviceBackups': {
 										// ----------------------------------
-										//        v2:devices:getDevicesWithDifferentBackups
+										//        v2:backups:getDeviceBackups
 										// ----------------------------------
 										method = 'GET';
-										endpoint = `/api/v2/devices/findByChangedBackup`;
+										const deviceId = this.getNodeParameter('deviceId', i) as string;
+										endpoint = `/api/v2/devices/${deviceId}/backups`;
 										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
 										Object.assign(qs, additionalParameters);
 										break;
@@ -129,6 +134,17 @@ export class Unimus implements INodeType {
 							}
 							case 'devices': {
 								switch (operation) {
+									case 'getDevices': {
+										// ----------------------------------
+										//        v2:devices:getDevices
+										// ----------------------------------
+										method = 'GET';
+										endpoint = `/api/v2/devices`;
+										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
+										Object.assign(qs, additionalParameters);
+										break;
+
+									}
 									case 'getDeviceByAddress': {
 										// ----------------------------------
 										//        v2:devices:getDeviceByAddress
@@ -138,6 +154,49 @@ export class Unimus implements INodeType {
 										endpoint = `/api/v2/devices/findByAddress/${address}`;
 										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
 										Object.assign(qs, additionalParameters);
+										break;
+
+									}
+									case 'getDeviceById': {
+										// ----------------------------------
+										//        v2:devices:getDeviceById
+										// ----------------------------------
+										method = 'GET';
+										const id = this.getNodeParameter('id', i) as string;
+										endpoint = `/api/v2/devices/${id}`;
+										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
+										Object.assign(qs, additionalParameters);
+										break;
+
+									}
+									default: {
+										throw new NodeOperationError(this.getNode(), `The operation "${operation}" is not supported for resource "${resource}" and version "${apiVersion}"!`);
+									}
+								}
+								break;
+
+							}
+							case 'diff': {
+								switch (operation) {
+									case 'getDevicesWithDifferentBackups': {
+										// ----------------------------------
+										//        v2:diff:getDevicesWithDifferentBackups
+										// ----------------------------------
+										method = 'GET';
+										endpoint = `/api/v2/devices/findByChangedBackup`;
+										const additionalParameters = this.getNodeParameter('additionalParameters', i) as IDataObject;
+										Object.assign(qs, additionalParameters);
+										break;
+
+									}
+									case 'getDiff': {
+										// ----------------------------------
+										//        v2:diff:getDiff
+										// ----------------------------------
+										method = 'GET';
+										endpoint = `/api/v2/backups/diff`;
+										qs.idOrig = this.getNodeParameter('idOrig', i) as IDataObject;
+										qs.revId = this.getNodeParameter('revId', i) as IDataObject;
 										break;
 
 									}

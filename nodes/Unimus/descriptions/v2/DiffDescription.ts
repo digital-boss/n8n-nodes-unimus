@@ -17,8 +17,12 @@ export const v2diffOperations: INodeProperties[] = [
 			{
 				name: 'Get devices with different backups',
 				value: 'getDevicesWithDifferentBackups',
-				description:
-					'Get a list of devices that has different backups in specified time range.',
+				description: 'Get a list of devices that has different backups in specified time range',
+			},
+			{
+				name: 'Get diff',
+				value: 'getDiff',
+				description: 'Get a difference between original and revised backup. Endpoint support making difference between backups from different devices.',
 			},
 		],
 		default: 'getDevicesWithDifferentBackups',
@@ -45,14 +49,14 @@ export const v2diffFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Page',
+				displayName: 'Page Index',
 				name: 'page',
 				type: 'number',
 				default: 0,
 				description: 'The page index',
 			},
 			{
-				displayName: 'Size',
+				displayName: 'Page Size',
 				name: 'size',
 				type: 'number',
 				default: 0,
@@ -73,6 +77,40 @@ export const v2diffFields: INodeProperties[] = [
 				description: 'End of time range in seconds (DEFAULT = time of the request)',
 			},
 		],
+	},
+
+	/*-------------------------------------------------------------------------- */
+	/*              		 							diff:getDiff					                     */
+	/* ------------------------------------------------------------------------- */
+	{
+		displayName: 'Original ID',
+		name: 'idOrig',
+		required: true,
+		type: 'number',
+		displayOptions: {
+			show: {
+				apiVersion: ['v2'],
+				resource: ['diff'],
+				operation: ['getDiff'],
+			},
+		},
+		default: '',
+		description: 'ID of the backup that will be considered as original',
+	},
+	{
+		displayName: 'Revised ID',
+		name: 'revId',
+		required: true,
+		type: 'number',
+		displayOptions: {
+			show: {
+				apiVersion: ['v2'],
+				resource: ['diff'],
+				operation: ['getDiff'],
+			},
+		},
+		default: '',
+		description: 'ID of the backup that will be considered as revised',
 	},
 
 ];
