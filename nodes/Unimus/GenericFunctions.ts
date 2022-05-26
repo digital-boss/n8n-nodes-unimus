@@ -61,3 +61,7 @@ export async function unimusApiRequest(
 		throw new NodeApiError(this.getNode(), error);
 	}
 }
+
+export function simplify(jsonData: IDataObject, propertyName = 'data'): IDataObject {
+	return jsonData['data'] as IDataObject || jsonData;
+}

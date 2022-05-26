@@ -10,7 +10,10 @@ import {
 	NodeOperationError,
 } from 'n8n-workflow';
 
-import { unimusApiRequest } from './GenericFunctions';
+import {
+	simplify,
+	unimusApiRequest
+} from './GenericFunctions';
 
 import { version } from '../version';
 
@@ -89,6 +92,13 @@ export class Unimus implements INodeType {
 			...v3backupsFields,
 			...v3devicesOperations,
 			...v3devicesFields,
+			{
+				displayName: 'Simplify Output',
+				name: 'simplifyOutput',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to simplify the output data',
+			},
 		],
 	};
 
@@ -320,6 +330,11 @@ export class Unimus implements INodeType {
 
 				if (Object.keys(responseData).length === 0) {
 					responseData = { success: true };
+				}
+
+				const simplifyOutput = this.getNodeParameter('simplifyOutput', 0) as boolean;
+				if (simplifyOutput) {
+					responseData = simplify(responseData);
 				}
 
 				if (Array.isArray(responseData)) {
