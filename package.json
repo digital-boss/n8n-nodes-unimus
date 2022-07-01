@@ -2,7 +2,7 @@
     "name": "@digital-boss/n8n-nodes-unimus",
     "version": "0.9.7",
     "description": "n8n-nodes-unimus",
-    "license": "SEE LICENSE IN LICENSE.md",
+  "license": "MIT",
     "homepage": "https://n8n.io",
     "author": {
         "name": "Merjema Sarajlija",

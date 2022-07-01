@@ -56,9 +56,6 @@ Special thanks to [N8n nodemation](https://n8n.io) workflow automation by Jan Ob
 
 Nodes by [digital-north-consulting.com](https://digital-north-consulting.com). For productive use and consulting on this, [contact us please](mailto:info@digital-north-consulting.com).
 
-## License
+# License
 
-[Apache 2.0 with Commons Clause](https://github.com/n8n-io/n8n/blob/master/packages/nodes-base/LICENSE.md)
-
-
-
+[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
