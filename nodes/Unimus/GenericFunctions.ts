@@ -63,5 +63,5 @@ export async function unimusApiRequest(
 }
 
 export function simplify(jsonData: IDataObject, propertyName = 'data'): IDataObject {
-	return jsonData['data'] as IDataObject || jsonData;
+	return jsonData[propertyName] as IDataObject || jsonData;
 }
